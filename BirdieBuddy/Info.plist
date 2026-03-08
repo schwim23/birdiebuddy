@@ -1,0 +1,37 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>BirdieBuddy</string>
+    <key>CFBundleDisplayName</key>
+    <string>BirdieBuddy</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UILaunchScreen</key>
+    <dict/>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>BirdieBuddy uses the microphone for voice score entry so you can call out scores hands-free.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>BirdieBuddy uses speech recognition to understand your score calls like "Mike got a birdie."</string>
+    <key>NSCameraUsageDescription</key>
+    <string>BirdieBuddy uses the camera to record videos of your golf shots.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>BirdieBuddy uses your location to suggest nearby golf courses.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>BirdieBuddy saves shot videos to your photo library.</string>
+</dict>
+</plist>
