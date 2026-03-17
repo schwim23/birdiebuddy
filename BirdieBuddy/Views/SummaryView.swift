@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SummaryView: View {
     @Environment(AppState.self) private var appState
-    @Binding var navigateToRound: Bool
+    @Binding var navigateToSummary: Bool
 
     var body: some View {
         VStack(spacing: 32) {
@@ -25,7 +25,7 @@ struct SummaryView: View {
 
             Button("Play Again") {
                 appState.startRound()
-                navigateToRound = true
+                navigateToSummary = false
             }
             .font(.title3)
             .padding(.horizontal, 40)
