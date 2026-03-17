@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184827BB522982A2AC458814 /* SummaryView.swift */; };
 		17C34F372FBFDA5F22A61443 /* RoundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9217713B9A056E0D5307B144 /* RoundView.swift */; };
+		5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */; };
 		A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */; };
 		B08F9E1A5191CA280B77C6D6 /* EnterScoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */; };
 		BA16CC41782285A42E874B40 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3D1CBD97543D82055158AC /* HomeView.swift */; };
 		C72281D8AD37784C141931CA /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */; };
 		CC475248FE9310D2A7ABDE9A /* StartRoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A5BD70B1E470F646464B6F /* StartRoundTests.swift */; };
+		E7DD3D2DA3EBEEC4561698EC /* ScoreParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,7 +31,9 @@
 /* Begin PBXFileReference section */
 		184827BB522982A2AC458814 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
 		2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdieBuddyApp.swift; sourceTree = "<group>"; };
+		315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognizer.swift; sourceTree = "<group>"; };
 		37A5BD70B1E470F646464B6F /* StartRoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRoundTests.swift; sourceTree = "<group>"; };
+		3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreParser.swift; sourceTree = "<group>"; };
 		65E87B6ACC97564FAB0EB09E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9217713B9A056E0D5307B144 /* RoundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundView.swift; sourceTree = "<group>"; };
 		96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterScoreTests.swift; sourceTree = "<group>"; };
@@ -45,8 +49,17 @@
 			isa = PBXGroup;
 			children = (
 				DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */,
+				3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		4389AA7FBD3DAFB01270E065 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		552A724EA14A51CFAE44753C /* BirdieBuddy */ = {
@@ -55,6 +68,7 @@
 				2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */,
 				65E87B6ACC97564FAB0EB09E /* Info.plist */,
 				0DBA853FE660394B1C9BEC57 /* Models */,
+				4389AA7FBD3DAFB01270E065 /* Services */,
 				7C4C54C95E2732B0A17340D2 /* Views */,
 			);
 			path = BirdieBuddy;
@@ -185,6 +199,8 @@
 				A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */,
 				BA16CC41782285A42E874B40 /* HomeView.swift in Sources */,
 				17C34F372FBFDA5F22A61443 /* RoundView.swift in Sources */,
+				E7DD3D2DA3EBEEC4561698EC /* ScoreParser.swift in Sources */,
+				5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */,
 				11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
