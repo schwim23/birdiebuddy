@@ -4,6 +4,7 @@ struct RoundView: View {
     @Environment(AppState.self) private var appState
     @Binding var navigateToRound: Bool
     @State private var navigateToSummary = false
+    @State private var speechRecognizer = SpeechRecognizer()
 
     private let par = 4
     private let scoreRange = 1...9
@@ -38,10 +39,7 @@ struct RoundView: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 16) {
                 ForEach(scoreRange, id: \.self) { score in
                     Button("\(score)") {
-                        appState.recordScore(score, forHole: appState.currentHole)
-                        if appState.isRoundFinished {
-                            navigateToSummary = true
-                        }
+                        recordScore(score)
                     }
                     .font(.title2)
                     .frame(width: 70, height: 70)
@@ -53,12 +51,63 @@ struct RoundView: View {
             }
             .padding(.horizontal)
 
+            if speechRecognizer.isAvailable || speechRecognizer.state == .idle {
+                VStack(spacing: 12) {
+                    Button {
+                        toggleListening()
+                    } label: {
+                        Label(
+                            speechRecognizer.state == .listening ? "Listening…" : "Say Your Score",
+                            systemImage: speechRecognizer.state == .listening ? "waveform" : "mic"
+                        )
+                        .font(.headline)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 14)
+                        .background(speechRecognizer.state == .listening ? Color.red.opacity(0.15) : Color.green.opacity(0.15))
+                        .foregroundStyle(speechRecognizer.state == .listening ? .red : .green)
+                        .clipShape(Capsule())
+                    }
+                    .accessibilityIdentifier("round.micButton")
+
+                    if !speechRecognizer.lastHeardText.isEmpty {
+                        Text("Heard: \"\(speechRecognizer.lastHeardText)\"")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("round.voiceFeedbackLabel")
+                    }
+                }
+            }
+
             Spacer()
         }
         .navigationTitle("Round in Progress")
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $navigateToSummary) {
             SummaryView(navigateToSummary: $navigateToSummary)
+        }
+        .task {
+            _ = await speechRecognizer.requestPermissions()
+        }
+        .onDisappear {
+            speechRecognizer.stopListening()
+        }
+    }
+
+    private func recordScore(_ score: Int) {
+        speechRecognizer.stopListening()
+        appState.recordScore(score, forHole: appState.currentHole)
+        if appState.isRoundFinished {
+            navigateToSummary = true
+        }
+    }
+
+    private func toggleListening() {
+        if speechRecognizer.state == .listening {
+            speechRecognizer.stopListening()
+        } else {
+            speechRecognizer.startListening(par: par) { score in
+                recordScore(score)
+            }
         }
     }
 }
