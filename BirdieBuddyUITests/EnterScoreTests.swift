@@ -31,7 +31,7 @@ final class EnterScoreTests: XCTestCase {
     func testAllScoreButtonsExist() {
         startRound()
 
-        for score in 3...10 {
+        for score in 1...9 {
             let button = app.buttons["round.scoreButton.\(score)"]
             XCTAssertTrue(button.exists, "Score button \(score) should exist")
         }

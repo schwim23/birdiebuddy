@@ -12,6 +12,8 @@ The app supports deterministic UI automation.
 - home.startRoundButton
 - round.holeLabel
 - round.parLabel
+- round.scoreButton.1
+- round.scoreButton.2
 - round.scoreButton.3
 - round.scoreButton.4
 - round.scoreButton.5
@@ -19,7 +21,6 @@ The app supports deterministic UI automation.
 - round.scoreButton.7
 - round.scoreButton.8
 - round.scoreButton.9
-- round.scoreButton.10
 - round.currentScoreLabel
 - summary.totalScoreLabel
 

@@ -6,7 +6,7 @@ struct RoundView: View {
     @State private var navigateToSummary = false
 
     private let par = 4
-    private let scoreRange = 3...10
+    private let scoreRange = 1...9
 
     var body: some View {
         VStack(spacing: 24) {
@@ -58,7 +58,7 @@ struct RoundView: View {
         .navigationTitle("Round in Progress")
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $navigateToSummary) {
-            SummaryView(navigateToRound: $navigateToRound)
+            SummaryView(navigateToSummary: $navigateToSummary)
         }
     }
 }
