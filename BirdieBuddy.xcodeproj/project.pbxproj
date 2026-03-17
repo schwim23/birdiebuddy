@@ -1,0 +1,442 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184827BB522982A2AC458814 /* SummaryView.swift */; };
+		17C34F372FBFDA5F22A61443 /* RoundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9217713B9A056E0D5307B144 /* RoundView.swift */; };
+		A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */; };
+		B08F9E1A5191CA280B77C6D6 /* EnterScoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */; };
+		BA16CC41782285A42E874B40 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3D1CBD97543D82055158AC /* HomeView.swift */; };
+		C72281D8AD37784C141931CA /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */; };
+		CC475248FE9310D2A7ABDE9A /* StartRoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A5BD70B1E470F646464B6F /* StartRoundTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		377B6479F6806D7C44766240 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4D7F33B9A84751E9ABA93D18 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 03E856240B6C97A709FD97F4;
+			remoteInfo = BirdieBuddy;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		184827BB522982A2AC458814 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
+		2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdieBuddyApp.swift; sourceTree = "<group>"; };
+		37A5BD70B1E470F646464B6F /* StartRoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRoundTests.swift; sourceTree = "<group>"; };
+		65E87B6ACC97564FAB0EB09E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9217713B9A056E0D5307B144 /* RoundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundView.swift; sourceTree = "<group>"; };
+		96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterScoreTests.swift; sourceTree = "<group>"; };
+		9C3D1CBD97543D82055158AC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		C7784D123F20FDA74F66AC33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		CA89C01181CD5AFD4D67F9A4 /* BirdieBuddyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdieBuddyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		DED07D1C3A1137DF9D44116F /* BirdieBuddy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BirdieBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0DBA853FE660394B1C9BEC57 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		552A724EA14A51CFAE44753C /* BirdieBuddy */ = {
+			isa = PBXGroup;
+			children = (
+				2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */,
+				65E87B6ACC97564FAB0EB09E /* Info.plist */,
+				0DBA853FE660394B1C9BEC57 /* Models */,
+				7C4C54C95E2732B0A17340D2 /* Views */,
+			);
+			path = BirdieBuddy;
+			sourceTree = "<group>";
+		};
+		5AFDCE99FB070B7657B0392B = {
+			isa = PBXGroup;
+			children = (
+				552A724EA14A51CFAE44753C /* BirdieBuddy */,
+				F798F24663A521E65D22617D /* BirdieBuddyUITests */,
+				DD426F43DD153E6CF03AB8A2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7C4C54C95E2732B0A17340D2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9C3D1CBD97543D82055158AC /* HomeView.swift */,
+				9217713B9A056E0D5307B144 /* RoundView.swift */,
+				184827BB522982A2AC458814 /* SummaryView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		DD426F43DD153E6CF03AB8A2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DED07D1C3A1137DF9D44116F /* BirdieBuddy.app */,
+				CA89C01181CD5AFD4D67F9A4 /* BirdieBuddyUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F798F24663A521E65D22617D /* BirdieBuddyUITests */ = {
+			isa = PBXGroup;
+			children = (
+				96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */,
+				C7784D123F20FDA74F66AC33 /* Info.plist */,
+				37A5BD70B1E470F646464B6F /* StartRoundTests.swift */,
+			);
+			path = BirdieBuddyUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		03E856240B6C97A709FD97F4 /* BirdieBuddy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 54C1A037734A655E8960B43F /* Build configuration list for PBXNativeTarget "BirdieBuddy" */;
+			buildPhases = (
+				2F01C1B0CCCFA8D406D3789E /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BirdieBuddy;
+			packageProductDependencies = (
+			);
+			productName = BirdieBuddy;
+			productReference = DED07D1C3A1137DF9D44116F /* BirdieBuddy.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C1C237C88100CC42D4C5B947 /* BirdieBuddyUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE6820230B705C6860F2EBAF /* Build configuration list for PBXNativeTarget "BirdieBuddyUITests" */;
+			buildPhases = (
+				DC763F015A3467A6DCF93F69 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				02906148CCA32085202B69AE /* PBXTargetDependency */,
+			);
+			name = BirdieBuddyUITests;
+			packageProductDependencies = (
+			);
+			productName = BirdieBuddyUITests;
+			productReference = CA89C01181CD5AFD4D67F9A4 /* BirdieBuddyUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4D7F33B9A84751E9ABA93D18 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					03E856240B6C97A709FD97F4 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					C1C237C88100CC42D4C5B947 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+						TestTargetID = 03E856240B6C97A709FD97F4;
+					};
+				};
+			};
+			buildConfigurationList = 8592D04E8D926B3F01C2FADC /* Build configuration list for PBXProject "BirdieBuddy" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 5AFDCE99FB070B7657B0392B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = DD426F43DD153E6CF03AB8A2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				03E856240B6C97A709FD97F4 /* BirdieBuddy */,
+				C1C237C88100CC42D4C5B947 /* BirdieBuddyUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2F01C1B0CCCFA8D406D3789E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C72281D8AD37784C141931CA /* AppState.swift in Sources */,
+				A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */,
+				BA16CC41782285A42E874B40 /* HomeView.swift in Sources */,
+				17C34F372FBFDA5F22A61443 /* RoundView.swift in Sources */,
+				11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DC763F015A3467A6DCF93F69 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B08F9E1A5191CA280B77C6D6 /* EnterScoreTests.swift in Sources */,
+				CC475248FE9310D2A7ABDE9A /* StartRoundTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		02906148CCA32085202B69AE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 03E856240B6C97A709FD97F4 /* BirdieBuddy */;
+			targetProxy = 377B6479F6806D7C44766240 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2E752A32DDEB9D2267A20C15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BirdieBuddyUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.schwim23.BirdieBuddyUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BirdieBuddy;
+			};
+			name = Release;
+		};
+		3B9E5C00014EBC2A39728E7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BirdieBuddyUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.schwim23.BirdieBuddyUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BirdieBuddy;
+			};
+			name = Debug;
+		};
+		40342160BFB8CDCAA5C778C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = BirdieBuddy/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.schwim23.BirdieBuddy;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		494F31943B369D52A9146068 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		56CA956559251763FA2A873B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		6F69F813481CFCD80103F8E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = BirdieBuddy/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.schwim23.BirdieBuddy;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		54C1A037734A655E8960B43F /* Build configuration list for PBXNativeTarget "BirdieBuddy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40342160BFB8CDCAA5C778C8 /* Debug */,
+				6F69F813481CFCD80103F8E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8592D04E8D926B3F01C2FADC /* Build configuration list for PBXProject "BirdieBuddy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56CA956559251763FA2A873B /* Debug */,
+				494F31943B369D52A9146068 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EE6820230B705C6860F2EBAF /* Build configuration list for PBXNativeTarget "BirdieBuddyUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B9E5C00014EBC2A39728E7F /* Debug */,
+				2E752A32DDEB9D2267A20C15 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4D7F33B9A84751E9ABA93D18 /* Project object */;
+}
