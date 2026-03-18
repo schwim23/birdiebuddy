@@ -4,6 +4,7 @@ enum ScoreParser {
     /// Parses spoken or typed text into a stroke count (1–9).
     /// Accepts digit strings ("5"), number words ("five"), and
     /// common golf terms relative to par (birdie, bogey, eagle, etc.).
+    /// Phonetic aliases handle common speech-recognizer mismatches.
     static func parse(_ text: String, par: Int) -> Int? {
         let lowered = text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -20,6 +21,26 @@ enum ScoreParser {
             if let n = Int(word), (1...9).contains(n) { return n }
         }
 
+        // Normalize phonetic misrecognitions before golf term matching.
+        // Speech recognizers commonly mishear golf terms — map them to canonical forms.
+        let phoneticAliases: [String: String] = [
+            // bogey variants
+            "bougie": "bogey", "boogie": "bogey", "boggy": "bogey",
+            "bogy": "bogey", "bogi": "bogey",
+            // birdie variants
+            "bertie": "birdie", "birdy": "birdie", "burdie": "birdie",
+            "birdee": "birdie", "burdy": "birdie",
+            // double bogey compound variants
+            "double bougie": "double bogey", "double boogie": "double bogey",
+            "double boggy": "double bogey",
+            // eagle variants (less common but just in case)
+            "eagled": "eagle",
+        ]
+        var normalized = lowered
+        for (alias, canonical) in phoneticAliases {
+            normalized = normalized.replacingOccurrences(of: alias, with: canonical)
+        }
+
         // Golf terms relative to par (longest match first to catch "double bogey" before "bogey")
         let golfTerms: [(String, Int)] = [
             ("hole in one", 1), ("ace", 1),
@@ -31,7 +52,7 @@ enum ScoreParser {
             ("par", par),
         ]
         for (term, score) in golfTerms {
-            if lowered.contains(term), (1...9).contains(score) { return score }
+            if normalized.contains(term), (1...9).contains(score) { return score }
         }
 
         return nil
