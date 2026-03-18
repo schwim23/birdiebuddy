@@ -12,7 +12,7 @@ enum SpeechRecognizerState {
 @Observable
 final class SpeechRecognizer {
     private(set) var state: SpeechRecognizerState = .idle
-    private(set) var lastHeardText: String = ""
+    var lastHeardText: String = ""
 
     private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
     private var audioEngine = AVAudioEngine()
@@ -51,6 +51,18 @@ final class SpeechRecognizer {
         }
     }
 
+    /// Listen continuously, updating lastHeardText, until stopListening() is called.
+    /// Use for free-form voice input (e.g. player setup) where the caller decides when to stop.
+    func startListeningForText() {
+        guard isAvailable, state == .idle else { return }
+        do {
+            try beginSessionForText()
+            state = .listening
+        } catch {
+            state = .idle
+        }
+    }
+
     func stopListening() {
         audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
@@ -63,7 +75,7 @@ final class SpeechRecognizer {
 
     // MARK: — Private
 
-    private func beginSession(par: Int, onScore: @escaping (Int) -> Void) throws {
+    private func setupAudioEngine() throws -> SFSpeechAudioBufferRecognitionRequest {
         recognitionTask?.cancel()
         recognitionTask = nil
 
@@ -83,7 +95,24 @@ final class SpeechRecognizer {
 
         audioEngine.prepare()
         try audioEngine.start()
+        return request
+    }
 
+    private func beginSessionForText() throws {
+        let request = try setupAudioEngine()
+        recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
+            guard let self else { return }
+            if let result {
+                self.lastHeardText = result.bestTranscription.formattedString
+            }
+            if error != nil || result?.isFinal == true {
+                self.stopListening()
+            }
+        }
+    }
+
+    private func beginSession(par: Int, onScore: @escaping (Int) -> Void) throws {
+        let request = try setupAudioEngine()
         recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
             guard let self else { return }
 

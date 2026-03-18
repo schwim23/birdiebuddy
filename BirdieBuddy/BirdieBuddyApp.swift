@@ -3,13 +3,27 @@ import SwiftUI
 @main
 struct BirdieBuddyApp: App {
     @State private var appState = AppState()
+    @State private var savedPlayersStore = SavedPlayersStore()
+    @State private var router = AppRouter()
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
+            NavigationStack(path: Binding(
+                get: { router.path },
+                set: { router.path = $0 }
+            )) {
                 HomeView()
+                    .navigationDestination(for: AppRoute.self) { route in
+                        switch route {
+                        case .setup:   SetupView()
+                        case .round:   RoundView()
+                        case .summary: SummaryView()
+                        }
+                    }
             }
             .environment(appState)
+            .environment(savedPlayersStore)
+            .environment(router)
         }
     }
 }

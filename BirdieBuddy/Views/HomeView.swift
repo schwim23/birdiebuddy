@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Environment(AppState.self) private var appState
-    @State private var navigateToRound = false
+    @Environment(AppRouter.self) private var router
 
     var body: some View {
         VStack(spacing: 32) {
@@ -11,8 +10,7 @@ struct HomeView: View {
                 .fontWeight(.bold)
 
             Button("Start Round") {
-                appState.startRound()
-                navigateToRound = true
+                router.navigate(to: .setup)
             }
             .font(.title2)
             .padding(.horizontal, 40)
@@ -24,8 +22,5 @@ struct HomeView: View {
         }
         .navigationTitle("")
         .navigationBarHidden(true)
-        .navigationDestination(isPresented: $navigateToRound) {
-            RoundView(navigateToRound: $navigateToRound)
-        }
     }
 }

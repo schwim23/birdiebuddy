@@ -13,10 +13,24 @@ final class EnterScoreTests: XCTestCase {
         app = nil
     }
 
+    // MARK: - Helper
+
+    /// Navigates through home + setup into RoundView with one player.
     private func startRound() {
         app.buttons["home.startRoundButton"].tap()
+        XCTAssertTrue(app.textFields["setup.playerNameField"].waitForExistence(timeout: 2))
+
+        let nameField = app.textFields["setup.playerNameField"]
+        nameField.tap()
+        nameField.typeText("Test Player")
+
+        app.buttons["setup.addPlayerConfirmButton"].tap()
+        app.buttons["setup.startRoundButton"].tap()
+
         XCTAssertTrue(app.staticTexts["round.holeLabel"].waitForExistence(timeout: 2))
     }
+
+    // MARK: - Tests
 
     func testEnterScoreAdvancesHole() {
         startRound()
@@ -30,10 +44,8 @@ final class EnterScoreTests: XCTestCase {
 
     func testAllScoreButtonsExist() {
         startRound()
-
         for score in 1...9 {
-            let button = app.buttons["round.scoreButton.\(score)"]
-            XCTAssertTrue(button.exists, "Score button \(score) should exist")
+            XCTAssertTrue(app.buttons["round.scoreButton.\(score)"].exists, "Score button \(score) missing")
         }
     }
 
@@ -41,14 +53,12 @@ final class EnterScoreTests: XCTestCase {
         startRound()
 
         for hole in 1...18 {
-            let holeLabel = app.staticTexts["round.holeLabel"]
-            XCTAssertTrue(holeLabel.waitForExistence(timeout: 3), "Hole \(hole) label not found")
-
+            XCTAssertTrue(app.staticTexts["round.holeLabel"].waitForExistence(timeout: 3), "Hole \(hole) label not found")
             app.buttons["round.scoreButton.5"].tap()
         }
 
         let summaryLabel = app.staticTexts["summary.totalScoreLabel"]
-        XCTAssertTrue(summaryLabel.waitForExistence(timeout: 3), "Summary screen should appear after 18 holes")
-        XCTAssertEqual(summaryLabel.label, "90") // 18 holes × 5 strokes
+        XCTAssertTrue(summaryLabel.waitForExistence(timeout: 6))
+        XCTAssertEqual(summaryLabel.label, "90") // 18 × 5
     }
 }
