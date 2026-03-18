@@ -24,6 +24,9 @@ final class AppState {
     func recordScore(_ strokes: Int, forHole hole: Int) {
         guard (1...18).contains(hole) else { return }
         scores[hole] = strokes
-        currentHole = hole + 1
+        // Only advance the leading hole pointer when scoring a new hole, not re-edits
+        if hole >= currentHole {
+            currentHole = hole + 1
+        }
     }
 }
