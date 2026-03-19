@@ -1,9 +1,9 @@
 import SwiftUI
+import SwiftData
 
 @main
 struct BirdieBuddyApp: App {
     @State private var appState = AppState()
-    @State private var savedPlayersStore = SavedPlayersStore()
     @State private var router = AppRouter()
 
     var body: some Scene {
@@ -22,8 +22,8 @@ struct BirdieBuddyApp: App {
                     }
             }
             .environment(appState)
-            .environment(savedPlayersStore)
             .environment(router)
         }
+        .modelContainer(for: [PlayerProfile.self, RoundRecord.self])
     }
 }
