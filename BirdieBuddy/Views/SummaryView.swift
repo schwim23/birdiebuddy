@@ -1,8 +1,12 @@
 import SwiftUI
+import SwiftData
 
 struct SummaryView: View {
     @Environment(AppState.self) private var appState
     @Environment(AppRouter.self) private var router
+    @Environment(\.modelContext) private var modelContext
+
+    @State private var roundSaved = false
 
     private var sortedPlayers: [Player] {
         appState.players.sorted { appState.totalScore(for: $0) < appState.totalScore(for: $1) }
@@ -54,5 +58,32 @@ struct SummaryView: View {
         }
         .navigationTitle("Summary")
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            saveRoundIfNeeded()
+        }
+    }
+
+    private func saveRoundIfNeeded() {
+        guard !roundSaved, !appState.players.isEmpty else { return }
+        roundSaved = true
+        let record = RoundRecord(
+            date: Date(),
+            players: appState.players,
+            scores: appState.scores
+        )
+        modelContext.insert(record)
+
+        // Mark each player's lastPlayed date
+        // (fetched profiles are available only if a @Query is present;
+        //  we update via a separate fetch to avoid adding @Query here)
+        let ids = appState.players.map { $0.id }
+        let descriptor = FetchDescriptor<PlayerProfile>(
+            predicate: #Predicate { ids.contains($0.id) }
+        )
+        if let profiles = try? modelContext.fetch(descriptor) {
+            for profile in profiles {
+                profile.lastPlayed = Date()
+            }
+        }
     }
 }

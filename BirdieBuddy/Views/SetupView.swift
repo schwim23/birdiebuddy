@@ -1,9 +1,12 @@
 import SwiftUI
+import SwiftData
 
 struct SetupView: View {
     @Environment(AppState.self) private var appState
-    @Environment(SavedPlayersStore.self) private var store
     @Environment(AppRouter.self) private var router
+    @Environment(\.modelContext) private var modelContext
+
+    @Query(sort: \PlayerProfile.name) private var savedProfiles: [PlayerProfile]
 
     @State private var roundPlayers: [Player] = []
     @State private var newName = ""
@@ -101,7 +104,7 @@ struct SetupView: View {
                 }
 
                 // MARK: Saved players
-                if !store.players.isEmpty {
+                if !savedProfiles.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         Button {
                             withAnimation { showSavedPlayers.toggle() }
@@ -117,19 +120,19 @@ struct SetupView: View {
                         .foregroundStyle(.primary)
 
                         if showSavedPlayers {
-                            ForEach(store.players) { saved in
+                            ForEach(savedProfiles) { profile in
                                 let alreadyAdded = roundPlayers.contains {
-                                    $0.name.lowercased() == saved.name.lowercased()
+                                    $0.name.lowercased() == profile.name.lowercased()
                                 }
                                 HStack {
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text(saved.name).font(.body)
-                                        Text("Handicap \(saved.handicap)").font(.caption).foregroundStyle(.secondary)
+                                        Text(profile.name).font(.body)
+                                        Text("Handicap \(profile.handicap)").font(.caption).foregroundStyle(.secondary)
                                     }
                                     Spacer()
                                     Button(alreadyAdded ? "Added" : "Add") {
                                         if !alreadyAdded {
-                                            roundPlayers.append(Player(name: saved.name, handicap: saved.handicap))
+                                            roundPlayers.append(profile.asPlayer)
                                         }
                                     }
                                     .disabled(alreadyAdded)
@@ -170,7 +173,7 @@ struct SetupView: View {
         guard !name.isEmpty else { return }
         let player = Player(name: name, handicap: newHandicap)
         roundPlayers.append(player)
-        store.upsert(player)
+        upsertProfile(for: player)
         newName = ""
         newHandicap = 0
     }
@@ -192,7 +195,16 @@ struct SetupView: View {
             let player = Player(name: p.name, handicap: p.handicap ?? 0)
             guard !roundPlayers.contains(where: { $0.name.lowercased() == player.name.lowercased() }) else { continue }
             roundPlayers.append(player)
-            store.upsert(player)
+            upsertProfile(for: player)
+        }
+    }
+
+    /// Insert or update a PlayerProfile in SwiftData.
+    private func upsertProfile(for player: Player) {
+        if let existing = savedProfiles.first(where: { $0.name.lowercased() == player.name.lowercased() }) {
+            existing.handicap = player.handicap
+        } else {
+            modelContext.insert(PlayerProfile(id: player.id, name: player.name, handicap: player.handicap))
         }
     }
 }
