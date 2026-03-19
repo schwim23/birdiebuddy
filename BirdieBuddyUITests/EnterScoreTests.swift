@@ -30,23 +30,28 @@ final class EnterScoreTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["round.holeLabel"].waitForExistence(timeout: 2))
     }
 
+    /// Enters a score for the first player's score field on the current hole.
+    private func enterScore(_ score: Int) {
+        let field = app.textFields["round.scoreField.0"]
+        XCTAssertTrue(field.waitForExistence(timeout: 3))
+        field.tap()
+        field.typeText("\(score)")
+    }
+
     // MARK: - Tests
+
+    func testScoreFieldExistsForPlayer() {
+        startRound()
+        XCTAssertTrue(app.textFields["round.scoreField.0"].waitForExistence(timeout: 2))
+    }
 
     func testEnterScoreAdvancesHole() {
         startRound()
-
-        app.buttons["round.scoreButton.5"].tap()
+        enterScore(5)
 
         let holeLabel = app.staticTexts["round.holeLabel"]
-        XCTAssertTrue(holeLabel.waitForExistence(timeout: 2))
+        XCTAssertTrue(holeLabel.waitForExistence(timeout: 3))
         XCTAssertEqual(holeLabel.label, "Hole 2")
-    }
-
-    func testAllScoreButtonsExist() {
-        startRound()
-        for score in 1...9 {
-            XCTAssertTrue(app.buttons["round.scoreButton.\(score)"].exists, "Score button \(score) missing")
-        }
     }
 
     func testPlayThrough18HolesShowsSummary() {
@@ -54,7 +59,7 @@ final class EnterScoreTests: XCTestCase {
 
         for hole in 1...18 {
             XCTAssertTrue(app.staticTexts["round.holeLabel"].waitForExistence(timeout: 3), "Hole \(hole) label not found")
-            app.buttons["round.scoreButton.5"].tap()
+            enterScore(5)
         }
 
         let summaryLabel = app.staticTexts["summary.totalScoreLabel"]
