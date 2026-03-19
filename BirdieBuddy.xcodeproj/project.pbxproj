@@ -12,6 +12,7 @@
 		18908BFE9234619F7723DF28 /* PlayerParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC88B406A4C96604DAE982B1 /* PlayerParser.swift */; };
 		19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7BB08CF3B060254E0A4BE8 /* Player.swift */; };
 		1A227E29EEB1A048D5A91CE7 /* SavedPlayersStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6527FD35CF80660962B56580 /* SavedPlayersStore.swift */; };
+		342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E685FFC2CF7EB0C9A3E9536 /* Course.swift */; };
 		5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */; };
 		6DB9E6C3E7BDC148F9B52391 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */; };
 		8ADA50C3D9A4195184F6CEE5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975093227D8F112FB51AD0D /* AppRouter.swift */; };
@@ -35,6 +36,7 @@
 
 /* Begin PBXFileReference section */
 		184827BB522982A2AC458814 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
+		1E685FFC2CF7EB0C9A3E9536 /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 		1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdieBuddyApp.swift; sourceTree = "<group>"; };
 		315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognizer.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 			children = (
 				5975093227D8F112FB51AD0D /* AppRouter.swift */,
 				DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */,
+				1E685FFC2CF7EB0C9A3E9536 /* Course.swift */,
 				CE7BB08CF3B060254E0A4BE8 /* Player.swift */,
 				DC88B406A4C96604DAE982B1 /* PlayerParser.swift */,
 				3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */,
@@ -213,6 +216,7 @@
 				8ADA50C3D9A4195184F6CEE5 /* AppRouter.swift in Sources */,
 				C72281D8AD37784C141931CA /* AppState.swift in Sources */,
 				A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */,
+				342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */,
 				BA16CC41782285A42E874B40 /* HomeView.swift in Sources */,
 				19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */,
 				18908BFE9234619F7723DF28 /* PlayerParser.swift in Sources */,
