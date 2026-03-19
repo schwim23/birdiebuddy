@@ -13,6 +13,19 @@ Features are listed in rough priority order. Each gets a feature spec in docs/fe
 - [ ] 006 — SwiftData persistence (save rounds across launches)
 - [ ] 007 — Match play with handicap-stroke scoring
 
+## Design & Branding
+See `docs/design.md` for the full app specification, design system, and screen implementation priority.
+
+- [ ] **D01** — Home screen redesign (recent rounds + handicap hero card) per design.md §7 Tier 1
+- [ ] **D02** — Round summary scoring profile chart (birdies/pars/bogeys)
+- [ ] **D03** — Scorecard landscape full-grid view
+- [ ] **D04** — Course setup screen (par/stroke-index/slope per hole)
+- [ ] **D05** — Club bag setup screen
+- [ ] **D06** — Stats dashboard (driving accuracy, putting, scoring distribution)
+- [ ] **D07** — GPS rangefinder (CoreLocation yardage to green)
+- [ ] **D08** — Auth (Sign in with Apple + email)
+- [ ] **D09** — Buddy feed + group tournament
+
 ## Backlog
 
 ### UX — Multi-Player Round Screen (005 follow-up)
