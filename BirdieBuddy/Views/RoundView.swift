@@ -45,11 +45,22 @@ struct RoundView: View {
                 .accessibilityIdentifier("round.nextHoleButton")
             }
             .padding(.top, 32)
-            .padding(.bottom, 24)
+            .padding(.bottom, 12)
+
+            // MARK: Match status banner
+            if appState.gameFormat == .matchPlay {
+                matchStatusBanner.padding(.bottom, 12)
+            }
 
             // MARK: Player score table
             playerTable
                 .padding(.horizontal)
+
+            // MARK: Hole result (match play — shown once both players have scored)
+            if appState.gameFormat == .matchPlay,
+               let result = appState.matchHoleResult(for: displayHole) {
+                holeResultView(result).padding(.top, 12)
+            }
 
             // MARK: Mic
             if speechRecognizer.state != .unavailable {
@@ -78,6 +89,34 @@ struct RoundView: View {
         }
     }
 
+    // MARK: - Match status banner
+
+    private var matchStatusBanner: some View {
+        Text(appState.matchStatusText)
+            .font(.headline)
+            .padding(.horizontal, 20).padding(.vertical, 8)
+            .background(Color.green.opacity(0.12))
+            .foregroundStyle(Color.green)
+            .clipShape(Capsule())
+            .accessibilityIdentifier("round.matchStatusLabel")
+    }
+
+    // MARK: - Hole result (match play)
+
+    @ViewBuilder
+    private func holeResultView(_ result: HoleResult) -> some View {
+        switch result {
+        case .playerWins(let p):
+            Text("\(p.name) wins the hole")
+                .font(.subheadline).foregroundStyle(.primary)
+                .padding(.horizontal)
+        case .halved:
+            Text("Hole halved")
+                .font(.subheadline).foregroundStyle(.secondary)
+                .padding(.horizontal)
+        }
+    }
+
     // MARK: - Player table
 
     private var playerTable: some View {
@@ -88,7 +127,7 @@ struct RoundView: View {
                     index: index,
                     hole: displayHole,
                     existingScore: appState.score(for: player, hole: displayHole),
-                    getsStroke: Course.receivesStroke(player, on: displayHole)
+                    getsStroke: appState.receivesStroke(player, on: displayHole)
                 ) { score in
                     appState.recordScore(score, forHole: displayHole, player: player)
                 }

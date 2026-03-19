@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A84F304D2943325914B3B94 /* GameFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E41CD192965DA85F0DF1F44 /* GameFormat.swift */; };
 		0F6647B4571DEAF8F7E213DA /* RoundRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BCA225C51C2C942C06DC9 /* RoundRecord.swift */; };
 		11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184827BB522982A2AC458814 /* SummaryView.swift */; };
 		17C34F372FBFDA5F22A61443 /* RoundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9217713B9A056E0D5307B144 /* RoundView.swift */; };
@@ -42,6 +43,7 @@
 		1E685FFC2CF7EB0C9A3E9536 /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 		1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdieBuddyApp.swift; sourceTree = "<group>"; };
+		2E41CD192965DA85F0DF1F44 /* GameFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameFormat.swift; sourceTree = "<group>"; };
 		315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognizer.swift; sourceTree = "<group>"; };
 		37A5BD70B1E470F646464B6F /* StartRoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRoundTests.swift; sourceTree = "<group>"; };
 		3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreParser.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				5975093227D8F112FB51AD0D /* AppRouter.swift */,
 				DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */,
 				1E685FFC2CF7EB0C9A3E9536 /* Course.swift */,
+				2E41CD192965DA85F0DF1F44 /* GameFormat.swift */,
 				CE7BB08CF3B060254E0A4BE8 /* Player.swift */,
 				DC88B406A4C96604DAE982B1 /* PlayerParser.swift */,
 				641E694C891613E89075E44A /* PlayerProfile.swift */,
@@ -238,6 +241,7 @@
 				C72281D8AD37784C141931CA /* AppState.swift in Sources */,
 				A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */,
 				342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */,
+				0A84F304D2943325914B3B94 /* GameFormat.swift in Sources */,
 				BA16CC41782285A42E874B40 /* HomeView.swift in Sources */,
 				19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */,
 				18908BFE9234619F7723DF28 /* PlayerParser.swift in Sources */,

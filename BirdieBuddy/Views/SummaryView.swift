@@ -17,6 +17,17 @@ struct SummaryView: View {
             Text("Round Complete!")
                 .font(.largeTitle).fontWeight(.bold)
 
+            // Match play result
+            if appState.gameFormat == .matchPlay {
+                Text(appState.matchStatusText)
+                    .font(.title2).fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24).padding(.vertical, 14)
+                    .background(Color.green.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .accessibilityIdentifier("summary.matchResultLabel")
+            }
+
             // Leading score — always carries summary.totalScoreLabel for test compatibility
             if let leader = sortedPlayers.first {
                 VStack(spacing: 4) {

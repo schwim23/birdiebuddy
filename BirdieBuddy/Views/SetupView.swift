@@ -9,6 +9,7 @@ struct SetupView: View {
     @Query(sort: \PlayerProfile.name) private var savedProfiles: [PlayerProfile]
 
     @State private var roundPlayers: [Player] = []
+    @State private var gameFormat: GameFormat = .strokePlay
     @State private var newName = ""
     @State private var newHandicap = 0
     @State private var showSavedPlayers = false
@@ -145,9 +146,24 @@ struct SetupView: View {
                     }
                 }
 
+                // MARK: Game format (match play only available for 2 players)
+                if roundPlayers.count == 2 {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("Format", systemImage: "flag")
+                            .font(.headline)
+                        Picker("Format", selection: $gameFormat) {
+                            ForEach(GameFormat.allCases, id: \.self) { format in
+                                Text(format.rawValue).tag(format)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .accessibilityIdentifier("setup.formatPicker")
+                    }
+                }
+
                 // MARK: Start round
                 Button("Start Round") {
-                    appState.startRound(with: roundPlayers)
+                    appState.startRound(with: roundPlayers, format: roundPlayers.count == 2 ? gameFormat : .strokePlay)
                     router.navigate(to: .round)
                 }
                 .disabled(roundPlayers.isEmpty)
