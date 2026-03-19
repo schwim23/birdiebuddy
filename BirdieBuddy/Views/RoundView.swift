@@ -5,23 +5,20 @@ struct RoundView: View {
     @Environment(AppRouter.self) private var router
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var displayHole: Int = 1
-    @State private var editingPlayer: Player? = nil
 
     private let par = 4
-    private let scoreRange = 1...9
 
     private var isOnLeadingHole: Bool { displayHole == appState.currentHole }
     private var canGoBack: Bool { displayHole > 1 }
     private var canGoForward: Bool { displayHole < appState.currentHole }
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 0) {
 
             // MARK: Hole navigation header
             HStack(spacing: 24) {
                 Button {
                     displayHole -= 1
-                    editingPlayer = nil
                     speechRecognizer.stopListening()
                 } label: {
                     Image(systemName: "chevron.left").font(.title2).frame(width: 44, height: 44)
@@ -40,7 +37,6 @@ struct RoundView: View {
 
                 Button {
                     displayHole += 1
-                    editingPlayer = nil
                     speechRecognizer.stopListening()
                 } label: {
                     Image(systemName: "chevron.right").font(.title2).frame(width: 44, height: 44)
@@ -49,11 +45,15 @@ struct RoundView: View {
                 .accessibilityIdentifier("round.nextHoleButton")
             }
             .padding(.top, 32)
+            .padding(.bottom, 24)
 
-            if isOnLeadingHole {
-                currentHoleBody
-            } else {
-                pastHoleBody
+            // MARK: Player score table
+            playerTable
+                .padding(.horizontal)
+
+            // MARK: Mic
+            if speechRecognizer.state != .unavailable {
+                micSection.padding(.top, 20)
             }
 
             Spacer()
@@ -66,6 +66,8 @@ struct RoundView: View {
         .onChange(of: appState.currentHole) { _, hole in
             if hole > 18 {
                 router.navigate(to: .summary)
+            } else {
+                displayHole = hole
             }
         }
         .task {
@@ -76,91 +78,34 @@ struct RoundView: View {
         }
     }
 
-    // MARK: - Current hole
+    // MARK: - Player table
 
-    @ViewBuilder
-    private var currentHoleBody: some View {
-        if let player = appState.currentPlayer {
-            VStack(spacing: 6) {
-                Text(player.name)
-                    .font(.title3).fontWeight(.semibold)
-                    .accessibilityIdentifier("round.playerLabel")
-                Text("Player \(appState.currentPlayerIndex + 1) of \(appState.players.count)")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
-        }
-
-        if let player = appState.currentPlayer,
-           let score = appState.score(for: player, hole: displayHole) {
-            Text("Score: \(score)")
-                .font(.title3)
-                .accessibilityIdentifier("round.currentScoreLabel")
-        }
-
-        Spacer()
-        Text("Select your score").font(.headline).foregroundStyle(.secondary)
-        scoreGrid(for: appState.currentPlayer, hole: displayHole)
-
-        if speechRecognizer.state != .unavailable {
-            micSection
-        }
-    }
-
-    // MARK: - Past hole
-
-    @ViewBuilder
-    private var pastHoleBody: some View {
-        Text("Hole \(displayHole) Scores").font(.headline).foregroundStyle(.secondary)
-
-        VStack(spacing: 8) {
-            ForEach(appState.players) { player in
-                let score = appState.score(for: player, hole: displayHole)
-                let isEditing = editingPlayer?.id == player.id
-
-                VStack(spacing: 8) {
-                    Button {
-                        editingPlayer = isEditing ? nil : player
-                    } label: {
-                        HStack {
-                            Text(player.name).font(.body)
-                            Spacer()
-                            Text(score.map { "\($0)" } ?? "—").font(.body).fontWeight(.semibold)
-                            Image(systemName: isEditing ? "chevron.up" : "pencil")
-                                .font(.caption).foregroundStyle(.secondary)
-                        }
-                        .padding(.vertical, 6)
-                    }
-                    .foregroundStyle(.primary)
-
-                    if isEditing {
-                        scoreGrid(for: player, hole: displayHole)
-                    }
+    private var playerTable: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(appState.players.enumerated()), id: \.element.id) { index, player in
+                PlayerScoreRow(
+                    player: player,
+                    index: index,
+                    hole: displayHole,
+                    existingScore: appState.score(for: player, hole: displayHole),
+                    getsStroke: Course.receivesStroke(player, on: displayHole)
+                ) { score in
+                    appState.recordScore(score, forHole: displayHole, player: player)
                 }
-                Divider()
-            }
-        }
-        .padding(.horizontal)
-    }
-
-    // MARK: - Shared
-
-    private func scoreGrid(for player: Player?, hole: Int) -> some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 12) {
-            ForEach(scoreRange, id: \.self) { score in
-                let isSelected = player.flatMap { appState.score(for: $0, hole: hole) } == score
-                Button("\(score)") {
-                    if let p = player { recordScore(score, for: p, hole: hole) }
+                if index < appState.players.count - 1 {
+                    Divider().padding(.leading)
                 }
-                .font(.title2)
-                .frame(width: 60, height: 60)
-                .background(isSelected ? Color.blue.opacity(0.6) : Color.blue.opacity(0.12))
-                .foregroundStyle(isSelected ? .white : .primary)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .accessibilityIdentifier("round.scoreButton.\(score)")
             }
         }
-        .padding(.horizontal)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color(.systemGray4), lineWidth: 0.5)
+        )
     }
+
+    // MARK: - Mic
 
     private var micSection: some View {
         VStack(spacing: 8) {
@@ -183,29 +128,19 @@ struct RoundView: View {
                     .accessibilityIdentifier("round.voiceFeedbackLabel")
             }
         }
+        .padding(.horizontal)
     }
 
     // MARK: - Actions
-
-    private func recordScore(_ score: Int, for player: Player, hole: Int) {
-        let wasLeadingHole = hole == appState.currentHole && player.id == appState.currentPlayer?.id
-        speechRecognizer.stopListening()
-        appState.recordScore(score, forHole: hole, player: player)
-        editingPlayer = nil
-
-        // Navigation handled by .onChange(of: appState.currentHole)
-        if !appState.isRoundFinished && wasLeadingHole {
-            displayHole = appState.currentHole
-        }
-    }
 
     private func toggleListening() {
         if speechRecognizer.state == .listening {
             speechRecognizer.stopListening()
         } else {
-            guard let player = appState.currentPlayer else { return }
+            let player = appState.players.first(where: { appState.score(for: $0, hole: displayHole) == nil })
+            guard let player else { return }
             speechRecognizer.startListening(par: par) { score in
-                recordScore(score, for: player, hole: displayHole)
+                appState.recordScore(score, forHole: displayHole, player: player)
             }
         }
     }
