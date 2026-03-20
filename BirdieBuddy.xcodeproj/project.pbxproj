@@ -14,6 +14,7 @@
 		17F9F862FEC5051DCFBC0009 /* ScorecardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8059089E8512BC5DF8890888 /* ScorecardView.swift */; };
 		18908BFE9234619F7723DF28 /* PlayerParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC88B406A4C96604DAE982B1 /* PlayerParser.swift */; };
 		19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7BB08CF3B060254E0A4BE8 /* Player.swift */; };
+		29C1D09117B1DDC195CD5239 /* CourseSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */; };
 		342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E685FFC2CF7EB0C9A3E9536 /* Course.swift */; };
 		3EACD22E2A8A884E7B7D86B9 /* PlayerProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641E694C891613E89075E44A /* PlayerProfile.swift */; };
 		5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */; };
@@ -21,6 +22,7 @@
 		79A7DD4CAEDE17470610636A /* PlayerScoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F6763AC38DC3FD1E086512 /* PlayerScoreRow.swift */; };
 		8ADA50C3D9A4195184F6CEE5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975093227D8F112FB51AD0D /* AppRouter.swift */; };
 		A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */; };
+		A86D540EDC3252EABCACB787 /* CourseSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911B1C521BBC285C998C5E35 /* CourseSetupView.swift */; };
 		AA82BBCE918EF6BD64B36202 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48F00EC6675253BFB8B56E7F /* Assets.xcassets */; };
 		B08F9E1A5191CA280B77C6D6 /* EnterScoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */; };
 		BA16CC41782285A42E874B40 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3D1CBD97543D82055158AC /* HomeView.swift */; };
@@ -53,11 +55,13 @@
 		641E694C891613E89075E44A /* PlayerProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProfile.swift; sourceTree = "<group>"; };
 		65E87B6ACC97564FAB0EB09E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8059089E8512BC5DF8890888 /* ScorecardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardView.swift; sourceTree = "<group>"; };
+		911B1C521BBC285C998C5E35 /* CourseSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSetupView.swift; sourceTree = "<group>"; };
 		9217713B9A056E0D5307B144 /* RoundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundView.swift; sourceTree = "<group>"; };
 		94F6763AC38DC3FD1E086512 /* PlayerScoreRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScoreRow.swift; sourceTree = "<group>"; };
 		96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterScoreTests.swift; sourceTree = "<group>"; };
 		9C3D1CBD97543D82055158AC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A54BCA225C51C2C942C06DC9 /* RoundRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundRecord.swift; sourceTree = "<group>"; };
+		AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSetup.swift; sourceTree = "<group>"; };
 		C7784D123F20FDA74F66AC33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CA89C01181CD5AFD4D67F9A4 /* BirdieBuddyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdieBuddyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7BB08CF3B060254E0A4BE8 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -73,6 +77,7 @@
 				5975093227D8F112FB51AD0D /* AppRouter.swift */,
 				DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */,
 				1E685FFC2CF7EB0C9A3E9536 /* Course.swift */,
+				AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */,
 				2E41CD192965DA85F0DF1F44 /* GameFormat.swift */,
 				CE7BB08CF3B060254E0A4BE8 /* Player.swift */,
 				DC88B406A4C96604DAE982B1 /* PlayerParser.swift */,
@@ -116,6 +121,7 @@
 		7C4C54C95E2732B0A17340D2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				911B1C521BBC285C998C5E35 /* CourseSetupView.swift */,
 				9C3D1CBD97543D82055158AC /* HomeView.swift */,
 				94F6763AC38DC3FD1E086512 /* PlayerScoreRow.swift */,
 				9217713B9A056E0D5307B144 /* RoundView.swift */,
@@ -244,6 +250,8 @@
 				C72281D8AD37784C141931CA /* AppState.swift in Sources */,
 				A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */,
 				342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */,
+				29C1D09117B1DDC195CD5239 /* CourseSetup.swift in Sources */,
+				A86D540EDC3252EABCACB787 /* CourseSetupView.swift in Sources */,
 				0A84F304D2943325914B3B94 /* GameFormat.swift in Sources */,
 				BA16CC41782285A42E874B40 /* HomeView.swift in Sources */,
 				19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */,
