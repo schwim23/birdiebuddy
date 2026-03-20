@@ -29,6 +29,7 @@
 		C72281D8AD37784C141931CA /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */; };
 		CC475248FE9310D2A7ABDE9A /* StartRoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A5BD70B1E470F646464B6F /* StartRoundTests.swift */; };
 		E7DD3D2DA3EBEEC4561698EC /* ScoreParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */; };
+		F27507B054167553FF1C6385 /* ScorecardParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E193AD07CFE0270D802846B /* ScorecardParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E193AD07CFE0270D802846B /* ScorecardParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardParser.swift; sourceTree = "<group>"; };
 		184827BB522982A2AC458814 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
 		1E685FFC2CF7EB0C9A3E9536 /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 		1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 		4389AA7FBD3DAFB01270E065 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				0E193AD07CFE0270D802846B /* ScorecardParser.swift */,
 				315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */,
 			);
 			path = Services;
@@ -261,6 +264,7 @@
 				0F6647B4571DEAF8F7E213DA /* RoundRecord.swift in Sources */,
 				17C34F372FBFDA5F22A61443 /* RoundView.swift in Sources */,
 				E7DD3D2DA3EBEEC4561698EC /* ScoreParser.swift in Sources */,
+				F27507B054167553FF1C6385 /* ScorecardParser.swift in Sources */,
 				17F9F862FEC5051DCFBC0009 /* ScorecardView.swift in Sources */,
 				6DB9E6C3E7BDC148F9B52391 /* SetupView.swift in Sources */,
 				5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */,
