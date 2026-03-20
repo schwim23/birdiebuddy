@@ -59,14 +59,14 @@ struct ScorecardView: View {
         HStack(spacing: 0) {
             cell("Par", width: kLabelWidth, font: .caption.weight(.semibold), color: .secondary)
             ForEach(frontNine, id: \.self) { hole in
-                cell("\(Course.defaultPar[hole] ?? 4)", width: kHoleWidth, font: .caption, color: .secondary)
+                cell("\(appState.par(for: hole))", width: kHoleWidth, font: .caption, color: .secondary)
             }
-            let frontPar = frontNine.reduce(0) { $0 + (Course.defaultPar[$1] ?? 4) }
+            let frontPar = frontNine.reduce(0) { $0 + appState.par(for: $1) }
             cell("\(frontPar)", width: kSubtotalWidth, font: .caption.weight(.semibold), color: .secondary)
             ForEach(backNine, id: \.self) { hole in
-                cell("\(Course.defaultPar[hole] ?? 4)", width: kHoleWidth, font: .caption, color: .secondary)
+                cell("\(appState.par(for: hole))", width: kHoleWidth, font: .caption, color: .secondary)
             }
-            let backPar = backNine.reduce(0) { $0 + (Course.defaultPar[$1] ?? 4) }
+            let backPar = backNine.reduce(0) { $0 + appState.par(for: $1) }
             cell("\(backPar)", width: kSubtotalWidth, font: .caption.weight(.semibold), color: .secondary)
             let totalPar = frontPar + backPar
             cell("\(totalPar)", width: kSubtotalWidth, font: .caption.weight(.bold), color: .secondary)
@@ -116,7 +116,7 @@ struct ScorecardView: View {
 
     private func scoreCell(player: Player, hole: Int) -> some View {
         let strokes = appState.score(for: player, hole: hole)
-        let par = Course.defaultPar[hole] ?? 4
+        let par = appState.par(for: hole)
         let category = strokes.map { ScoreCategory.category(for: $0, par: par) }
 
         return ZStack {

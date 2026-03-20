@@ -80,7 +80,7 @@ struct SummaryView: View {
     // MARK: - Scoring Breakdown
 
     private var scoringBreakdown: some View {
-        let profiles = appState.players.map { ScoringProfile(player: $0, scores: appState.scores) }
+        let profiles = appState.players.map { ScoringProfile(player: $0, scores: appState.scores, roundPar: appState.roundPar) }
         let anyHoles = profiles.contains { $0.holesPlayed > 0 }
 
         return Group {
@@ -200,13 +200,13 @@ struct ScoringProfile {
     let double: Int
     let holesPlayed: Int
 
-    init(player: Player, scores: [UUID: [Int: Int]]) {
+    init(player: Player, scores: [UUID: [Int: Int]], roundPar: [Int: Int] = Course.defaultPar) {
         self.player = player
         let holeScores = scores[player.id] ?? [:]
         var e = 0, b = 0, p = 0, bo = 0, d = 0
         for hole in 1...18 {
             guard let strokes = holeScores[hole],
-                  let par = Course.defaultPar[hole] else { continue }
+                  let par = roundPar[hole] else { continue }
             switch ScoreCategory.category(for: strokes, par: par) {
             case .eagle:  e  += 1
             case .birdie: b  += 1

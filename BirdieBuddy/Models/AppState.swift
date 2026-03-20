@@ -10,16 +10,27 @@ final class AppState {
     /// scores[playerID][holeNumber] = strokes
     var scores: [UUID: [Int: Int]] = [:]
 
+    /// Course configuration snapshot taken at round start.
+    var roundPar: [Int: Int] = Course.defaultPar
+    var roundStrokeIndex: [Int: Int] = Course.defaultStrokeIndex
+
     var isRoundFinished: Bool { currentHole > 18 }
+
+    // MARK: - Course helpers
+
+    func par(for hole: Int) -> Int { roundPar[hole] ?? 4 }
+    func strokeIndex(for hole: Int) -> Int { roundStrokeIndex[hole] ?? hole }
 
     // MARK: - Setup
 
-    func startRound(with players: [Player], format: GameFormat = .strokePlay) {
+    func startRound(with players: [Player], format: GameFormat = .strokePlay, course: CourseSetup? = nil) {
         self.players = players
         self.gameFormat = format
         currentHole = 1
         isRoundActive = true
         scores = [:]
+        roundPar = course?.parDict ?? Course.defaultPar
+        roundStrokeIndex = course?.strokeIndexDict ?? Course.defaultStrokeIndex
     }
 
     // MARK: - Scoring
@@ -54,7 +65,7 @@ final class AppState {
         guard players.count == 2,
               let gross = score(for: player, hole: hole),
               let opponent = players.first(where: { $0.id != player.id }) else { return nil }
-        let strokes = Course.matchPlayStrokes(for: player, against: opponent, on: hole)
+        let strokes = matchPlayStrokes(for: player, against: opponent, on: hole)
         return gross - strokes
     }
 
@@ -108,8 +119,21 @@ final class AppState {
     func receivesStroke(_ player: Player, on hole: Int) -> Bool {
         if gameFormat == .matchPlay, players.count == 2,
            let opponent = players.first(where: { $0.id != player.id }) {
-            return Course.matchPlayStrokes(for: player, against: opponent, on: hole) > 0
+            return matchPlayStrokes(for: player, against: opponent, on: hole) > 0
         }
-        return Course.receivesStroke(player, on: hole)
+        // Stroke play: use round's stroke index
+        guard player.handicap > 0, let si = roundStrokeIndex[hole] else { return false }
+        return si <= player.handicap
+    }
+
+    // MARK: - Private match play stroke calculation (uses roundStrokeIndex)
+
+    private func matchPlayStrokes(for player: Player, against opponent: Player, on hole: Int) -> Int {
+        let diff = player.handicap - opponent.handicap
+        guard diff > 0, let si = roundStrokeIndex[hole] else { return 0 }
+        var strokes = 0
+        if si <= diff      { strokes += 1 }
+        if si <= diff - 18 { strokes += 1 }
+        return strokes
     }
 }

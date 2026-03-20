@@ -6,7 +6,7 @@ struct RoundView: View {
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var displayHole: Int = 1
 
-    private let par = 4
+    private var currentPar: Int { appState.par(for: displayHole) }
 
     private var isOnLeadingHole: Bool { displayHole == appState.currentHole }
     private var canGoBack: Bool { displayHole > 1 }
@@ -30,7 +30,7 @@ struct RoundView: View {
                     Text("Hole \(displayHole)")
                         .font(.largeTitle).fontWeight(.bold)
                         .accessibilityIdentifier("round.holeLabel")
-                    Text("Par \(par)")
+                    Text("Par \(currentPar)")
                         .font(.title2).foregroundStyle(.secondary)
                         .accessibilityIdentifier("round.parLabel")
                 }
@@ -188,7 +188,7 @@ struct RoundView: View {
         } else {
             let player = appState.players.first(where: { appState.score(for: $0, hole: displayHole) == nil })
             guard let player else { return }
-            speechRecognizer.startListening(par: par) { score in
+            speechRecognizer.startListening(par: currentPar) { score in
                 appState.recordScore(score, forHole: displayHole, player: player)
             }
         }

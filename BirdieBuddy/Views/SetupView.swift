@@ -7,13 +7,19 @@ struct SetupView: View {
     @Environment(\.modelContext) private var modelContext
 
     @Query(sort: \PlayerProfile.name) private var savedProfiles: [PlayerProfile]
+    @Query(sort: \CourseSetup.name)  private var savedCourses: [CourseSetup]
 
     @State private var roundPlayers: [Player] = []
     @State private var gameFormat: GameFormat = .strokePlay
+    @State private var selectedCourseID: UUID? = nil   // nil = Default
     @State private var newName = ""
     @State private var newHandicap = 0
     @State private var showSavedPlayers = false
     @State private var speechRecognizer = SpeechRecognizer()
+
+    private var selectedCourse: CourseSetup? {
+        savedCourses.first { $0.id == selectedCourseID }
+    }
 
     var body: some View {
         ScrollView {
@@ -146,6 +152,38 @@ struct SetupView: View {
                     }
                 }
 
+                // MARK: Course
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Course", systemImage: "flag.fill")
+                        .font(.headline)
+
+                    Picker("Course", selection: $selectedCourseID) {
+                        Text("Default (Par 72)").tag(UUID?.none)
+                        ForEach(savedCourses) { course in
+                            Text(course.name).tag(UUID?.some(course.id))
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .accessibilityIdentifier("setup.coursePicker")
+
+                    Button {
+                        router.navigate(to: .newCourse)
+                    } label: {
+                        Label("Set up new course", systemImage: "plus.circle")
+                            .font(.subheadline)
+                    }
+                    .accessibilityIdentifier("setup.newCourseButton")
+
+                    if let course = selectedCourse {
+                        Button {
+                            router.navigate(to: .editCourse(course))
+                        } label: {
+                            Label("Edit \(course.name)", systemImage: "pencil")
+                                .font(.subheadline)
+                        }
+                    }
+                }
+
                 // MARK: Game format (match play only available for 2 players)
                 if roundPlayers.count == 2 {
                     VStack(alignment: .leading, spacing: 8) {
@@ -163,7 +201,11 @@ struct SetupView: View {
 
                 // MARK: Start round
                 Button("Start Round") {
-                    appState.startRound(with: roundPlayers, format: roundPlayers.count == 2 ? gameFormat : .strokePlay)
+                    appState.startRound(
+                        with: roundPlayers,
+                        format: roundPlayers.count == 2 ? gameFormat : .strokePlay,
+                        course: selectedCourse
+                    )
                     router.navigate(to: .round)
                 }
                 .disabled(roundPlayers.isEmpty)

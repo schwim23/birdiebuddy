@@ -15,16 +15,18 @@ struct BirdieBuddyApp: App {
                 HomeView()
                     .navigationDestination(for: AppRoute.self) { route in
                         switch route {
-                        case .setup:     SetupView()
-                        case .round:     RoundView()
-                        case .summary:   SummaryView()
-                        case .scorecard: ScorecardView()
+                        case .setup:              SetupView()
+                        case .round:              RoundView()
+                        case .summary:            SummaryView()
+                        case .scorecard:          ScorecardView()
+                        case .newCourse:          CourseSetupView()
+                        case .editCourse(let c):  CourseSetupView(existingCourse: c)
                         }
                     }
             }
             .environment(appState)
             .environment(router)
         }
-        .modelContainer(for: [PlayerProfile.self, RoundRecord.self])
+        .modelContainer(for: [PlayerProfile.self, RoundRecord.self, CourseSetup.self])
     }
 }
