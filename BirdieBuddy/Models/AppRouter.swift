@@ -6,6 +6,7 @@ enum AppRoute: Hashable {
     case setup
     case round
     case summary
+    case scorecard
 }
 
 /// Holds the NavigationPath centrally so any view can push/pop without chained bindings.

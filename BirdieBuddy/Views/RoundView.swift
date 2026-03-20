@@ -10,7 +10,7 @@ struct RoundView: View {
 
     private var isOnLeadingHole: Bool { displayHole == appState.currentHole }
     private var canGoBack: Bool { displayHole > 1 }
-    private var canGoForward: Bool { displayHole < appState.currentHole }
+    private var canGoForward: Bool { displayHole < 18 }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -71,6 +71,16 @@ struct RoundView: View {
         }
         .navigationTitle("Round in Progress")
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    router.navigate(to: .scorecard)
+                } label: {
+                    Label("Scorecard", systemImage: "list.bullet")
+                }
+                .accessibilityIdentifier("round.scorecardButton")
+            }
+        }
         .onAppear {
             displayHole = appState.currentHole
         }

@@ -15,9 +15,10 @@ struct BirdieBuddyApp: App {
                 HomeView()
                     .navigationDestination(for: AppRoute.self) { route in
                         switch route {
-                        case .setup:   SetupView()
-                        case .round:   RoundView()
-                        case .summary: SummaryView()
+                        case .setup:     SetupView()
+                        case .round:     RoundView()
+                        case .summary:   SummaryView()
+                        case .scorecard: ScorecardView()
                         }
                     }
             }
