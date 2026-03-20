@@ -2,6 +2,9 @@ import Foundation
 
 /// Holds static course data until a real course database is added.
 struct Course {
+    /// Default par per hole — all 4s until a course setup screen (D04) is added.
+    static let defaultPar: [Int: Int] = Dictionary(uniqueKeysWithValues: (1...18).map { ($0, 4) })
+
     /// Default stroke index: hole number → difficulty rank (1 = hardest, 18 = easiest).
     /// A player with handicap H receives a stroke on every hole whose SI ≤ H.
     static let defaultStrokeIndex: [Int: Int] = [
