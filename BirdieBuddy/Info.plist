@@ -20,8 +20,12 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Birdie Buddy uses the camera so you can photograph a scorecard to auto-fill course setup.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Birdie Buddy uses the microphone so you can speak your score hands-free.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Birdie Buddy reads photos so you can pick a scorecard image to auto-fill course setup.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Birdie Buddy uses speech recognition to hear your spoken score.</string>
 	<key>UILaunchScreen</key>
