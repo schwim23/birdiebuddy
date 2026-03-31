@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct CourseSetupView: View {
     @Environment(\.modelContext) private var modelContext
@@ -14,10 +15,38 @@ struct CourseSetupView: View {
     @State private var parArray: [Int] = Array(repeating: 4, count: 18)
     @State private var strokeIndexArray: [Int] = CourseSetup.defaultStrokeIndexArray
 
+    // Scanner state
+    @State private var photoItem: PhotosPickerItem? = nil
+    @State private var isScanning = false
+    @State private var scanSummary: String? = nil
+    @State private var showScanResult = false
+
     private var isNew: Bool { existingCourse == nil }
 
     var body: some View {
         Form {
+            // MARK: Scan button
+            Section {
+                PhotosPicker(selection: $photoItem, matching: .images, photoLibrary: .shared()) {
+                    Label("Scan Scorecard Photo", systemImage: "camera.viewfinder")
+                        .frame(maxWidth: .infinity)
+                }
+                .accessibilityIdentifier("courseSetup.scanButton")
+
+                if isScanning {
+                    HStack {
+                        ProgressView()
+                        Text("Scanning…")
+                            .font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }
+            } header: {
+                Text("Auto-fill from Photo")
+            } footer: {
+                Text("Take or choose a photo of the scorecard. Fields will be pre-filled; review before saving.")
+                    .font(.caption)
+            }
+
             // MARK: Course info
             Section("Course Info") {
                 TextField("Course name", text: $name)
@@ -40,7 +69,7 @@ struct CourseSetupView: View {
                 }
             }
 
-            // MARK: Save
+            // MARK: Save / Delete
             Section {
                 Button(isNew ? "Add Course" : "Save Changes") {
                     save()
@@ -51,9 +80,7 @@ struct CourseSetupView: View {
 
                 if !isNew {
                     Button("Delete Course", role: .destructive) {
-                        if let course = existingCourse {
-                            modelContext.delete(course)
-                        }
+                        if let course = existingCourse { modelContext.delete(course) }
                         dismiss()
                     }
                 }
@@ -62,7 +89,52 @@ struct CourseSetupView: View {
         .navigationTitle(isNew ? "New Course" : "Edit Course")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { loadExisting() }
+        .onChange(of: photoItem) { _, item in
+            guard let item else { return }
+            Task { await runScan(item: item) }
+        }
+        .alert("Scan Complete", isPresented: $showScanResult) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(scanSummary ?? "")
+        }
     }
+
+    // MARK: - Scan
+
+    private func runScan(item: PhotosPickerItem) async {
+        isScanning = true
+        defer { isScanning = false; photoItem = nil }
+
+        guard let data = try? await item.loadTransferable(type: Data.self),
+              let image = UIImage(data: data) else {
+            scanSummary = "Could not load image."
+            showScanResult = true
+            return
+        }
+
+        guard let result = try? await ScorecardParser.scan(image: image) else {
+            scanSummary = "Scan failed."
+            showScanResult = true
+            return
+        }
+
+        await MainActor.run { applyResult(result) }
+        scanSummary = result.foundAnything ? result.summary : "No scorecard data detected. Try a clearer photo."
+        showScanResult = true
+    }
+
+    private func applyResult(_ result: ScorecardScanResult) {
+        if let n = result.courseName, name.trimmingCharacters(in: .whitespaces).isEmpty {
+            name = n
+        }
+        if let s = result.slopeRating            { slopeRating = s }
+        if let r = result.courseRatingTimes10    { courseRatingTimes10 = r }
+        if let par = result.parValues, par.count == 18 { parArray = par }
+        if let hcp = result.handicapValues, hcp.count == 18 { strokeIndexArray = hcp }
+    }
+
+    // MARK: - Persistence
 
     private func loadExisting() {
         guard let c = existingCourse else { return }
@@ -83,14 +155,13 @@ struct CourseSetupView: View {
             course.parArray = parArray
             course.strokeIndexArray = strokeIndexArray
         } else {
-            let course = CourseSetup(
+            modelContext.insert(CourseSetup(
                 name: trimmed,
                 slopeRating: slopeRating,
                 courseRatingTimes10: courseRatingTimes10,
                 parArray: parArray,
                 strokeIndexArray: strokeIndexArray
-            )
-            modelContext.insert(course)
+            ))
         }
         dismiss()
     }
@@ -111,7 +182,6 @@ private struct HoleRow: View {
 
             Spacer()
 
-            // Par picker: 3 / 4 / 5
             Picker("Par", selection: $par) {
                 Text("3").tag(3)
                 Text("4").tag(4)
@@ -122,7 +192,6 @@ private struct HoleRow: View {
 
             Spacer()
 
-            // SI stepper
             HStack(spacing: 4) {
                 Text("SI")
                     .font(.caption).foregroundStyle(.secondary)
