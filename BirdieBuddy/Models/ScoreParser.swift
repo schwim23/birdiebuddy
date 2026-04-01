@@ -1,10 +1,51 @@
 import Foundation
 
 enum ScoreParser {
+    // MARK: - Static lookup tables (allocated once)
+
+    private static let wordToInt: [String: Int] = [
+        "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+        "six": 6, "seven": 7, "eight": 8, "nine": 9
+    ]
+
+    /// Phonetic misrecognitions → canonical golf term.
+    private static let phoneticAliases: [String: String] = [
+        "bougie": "bogey", "boogie": "bogey", "boggy": "bogey",
+        "bogy": "bogey",  "bogi":  "bogey",
+        "bertie": "birdie", "birdy": "birdie", "burdie": "birdie",
+        "birdee": "birdie", "burdy": "birdie",
+        "double bougie": "double bogey", "double boogie": "double bogey",
+        "double boggy":  "double bogey",
+        "eagled": "eagle",
+    ]
+
+    /// Golf terms sorted longest-first so "double bogey" matches before "bogey".
+    /// Par-relative offsets stored; absolute score calculated at call time.
+    private static let golfTermOffsets: [(String, Int)] = [
+        ("hole in one", -99),   // special: always 1
+        ("ace",         -99),   // special: always 1
+        ("triple bogey", +3),
+        ("double bogey", +2),
+        ("triple",       +3),
+        ("double",       +2),
+        ("eagle",        -2),
+        ("birdie",       -1),
+        ("bogey",        +1),
+        ("par",           0),
+    ]
+
+    /// Vocabulary hints for the speech recogniser (improves on-device accuracy).
+    static let contextualStrings: [String] = [
+        "ace", "eagle", "birdie", "par", "bogey",
+        "double bogey", "triple bogey", "double", "triple",
+        "hole in one",
+        "one", "two", "three", "four", "five",
+        "six", "seven", "eight", "nine",
+    ]
+
+    // MARK: - Parse
+
     /// Parses spoken or typed text into a stroke count (1–9).
-    /// Accepts digit strings ("5"), number words ("five"), and
-    /// common golf terms relative to par (birdie, bogey, eagle, etc.).
-    /// Phonetic aliases handle common speech-recognizer mismatches.
     static func parse(_ text: String, par: Int) -> Int? {
         let lowered = text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -12,47 +53,24 @@ enum ScoreParser {
         if let n = Int(lowered), (1...9).contains(n) { return n }
 
         // Number words — check each token
-        let wordToInt: [String: Int] = [
-            "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-            "six": 6, "seven": 7, "eight": 8, "nine": 9
-        ]
         for word in lowered.components(separatedBy: .whitespaces) {
             if let n = wordToInt[word] { return n }
             if let n = Int(word), (1...9).contains(n) { return n }
         }
 
-        // Normalize phonetic misrecognitions before golf term matching.
-        // Speech recognizers commonly mishear golf terms — map them to canonical forms.
-        let phoneticAliases: [String: String] = [
-            // bogey variants
-            "bougie": "bogey", "boogie": "bogey", "boggy": "bogey",
-            "bogy": "bogey", "bogi": "bogey",
-            // birdie variants
-            "bertie": "birdie", "birdy": "birdie", "burdie": "birdie",
-            "birdee": "birdie", "burdy": "birdie",
-            // double bogey compound variants
-            "double bougie": "double bogey", "double boogie": "double bogey",
-            "double boggy": "double bogey",
-            // eagle variants (less common but just in case)
-            "eagled": "eagle",
-        ]
+        // Normalize phonetic misrecognitions
         var normalized = lowered
         for (alias, canonical) in phoneticAliases {
-            normalized = normalized.replacingOccurrences(of: alias, with: canonical)
+            if normalized.contains(alias) {
+                normalized = normalized.replacingOccurrences(of: alias, with: canonical)
+            }
         }
 
-        // Golf terms relative to par (longest match first to catch "double bogey" before "bogey")
-        let golfTerms: [(String, Int)] = [
-            ("hole in one", 1), ("ace", 1),
-            ("double bogey", par + 2), ("triple bogey", par + 3),
-            ("double", par + 2), ("triple", par + 3),
-            ("eagle", par - 2),
-            ("birdie", par - 1),
-            ("bogey", par + 1),
-            ("par", par),
-        ]
-        for (term, score) in golfTerms {
-            if normalized.contains(term), (1...9).contains(score) { return score }
+        // Golf terms (longest match first)
+        for (term, offset) in golfTermOffsets {
+            guard normalized.contains(term) else { continue }
+            let score = offset == -99 ? 1 : par + offset
+            if (1...9).contains(score) { return score }
         }
 
         return nil

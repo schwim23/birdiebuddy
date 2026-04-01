@@ -9,29 +9,41 @@ enum SpeechRecognizerState {
     case unavailable
 }
 
+/// Wraps SFSpeechRecognizer for two modes:
+///   • Score entry  — `startListening(par:onScore:)` — fires callback on first valid score, then stops.
+///   • Free text    — `startListeningForText()` — streams `lastHeardText` until `stopListening()` is called.
+///
+/// All @Observable property mutations are dispatched to the main actor.
+/// Audio engine and AVAudioSession work happens on the calling thread (always main in practice).
 @Observable
 final class SpeechRecognizer {
     private(set) var state: SpeechRecognizerState = .idle
     var lastHeardText: String = ""
 
+    // MARK: - Private state
+
     private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
     private var audioEngine = AVAudioEngine()
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
+    private var silenceTimer: Timer?
 
-    // MARK: — Permissions
+    /// Seconds of inactivity before the listening session auto-cancels.
+    private static let scoreTimeout: TimeInterval = 10
+    private static let textTimeout: TimeInterval  = 20
 
-    /// Returns true if both speech recognition and microphone are authorized.
+    // MARK: - Permissions
+
     func requestPermissions() async -> Bool {
         let speechStatus = await withCheckedContinuation { cont in
             SFSpeechRecognizer.requestAuthorization { cont.resume(returning: $0) }
         }
         guard speechStatus == .authorized else {
-            state = .unavailable
+            await MainActor.run { state = .unavailable }
             return false
         }
         let micGranted = await AVAudioApplication.requestRecordPermission()
-        if !micGranted { state = .unavailable }
+        if !micGranted { await MainActor.run { state = .unavailable } }
         return micGranted
     }
 
@@ -39,24 +51,27 @@ final class SpeechRecognizer {
         state != .unavailable && (recognizer?.isAvailable ?? false)
     }
 
-    // MARK: — Listening
+    // MARK: - Listening
 
-    func startListening(par: Int, onScore: @escaping (Int) -> Void) {
+    /// Listens for a valid golf score. Stops automatically when a score is parsed or
+    /// after `scoreTimeout` seconds of silence. Calls `onScore` on the main actor.
+    func startListening(par: Int, onScore: @escaping @MainActor (Int) -> Void) {
         guard isAvailable, state == .idle else { return }
         do {
-            try beginSession(par: par, onScore: onScore)
+            try beginScoreSession(par: par, onScore: onScore)
             state = .listening
         } catch {
             state = .idle
         }
     }
 
-    /// Listen continuously, updating lastHeardText, until stopListening() is called.
-    /// Use for free-form voice input (e.g. player setup) where the caller decides when to stop.
+    /// Listens continuously, streaming transcription into `lastHeardText`.
+    /// Stops automatically after `textTimeout` seconds of silence, or when the
+    /// caller invokes `stopListening()`.
     func startListeningForText() {
         guard isAvailable, state == .idle else { return }
         do {
-            try beginSessionForText()
+            try beginTextSession()
             state = .listening
         } catch {
             state = .idle
@@ -64,6 +79,8 @@ final class SpeechRecognizer {
     }
 
     func stopListening() {
+        silenceTimer?.invalidate()
+        silenceTimer = nil
         audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
         recognitionRequest?.endAudio()
@@ -73,62 +90,99 @@ final class SpeechRecognizer {
         if state == .listening { state = .idle }
     }
 
-    // MARK: — Private
+    // MARK: - Private: audio engine setup
 
-    private func setupAudioEngine() throws -> SFSpeechAudioBufferRecognitionRequest {
+    private func makeRequest(contextual: [String]) throws -> SFSpeechAudioBufferRecognitionRequest {
         recognitionTask?.cancel()
         recognitionTask = nil
 
-        let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        let session = AVAudioSession.sharedInstance()
+        try session.setCategory(.record, mode: .measurement, options: .duckOthers)
+        try session.setActive(true, options: .notifyOthersOnDeactivation)
 
         let request = SFSpeechAudioBufferRecognitionRequest()
         request.shouldReportPartialResults = true
+        request.contextualStrings = contextual
+
+        // Prefer on-device recognition (lower latency, no network dependency).
+        // Falls back to server if the device doesn't support it.
+        if #available(iOS 13, *) {
+            request.requiresOnDeviceRecognition = recognizer?.supportsOnDeviceRecognition ?? false
+        }
+
         recognitionRequest = request
 
         let inputNode = audioEngine.inputNode
         let format = inputNode.outputFormat(forBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
+        inputNode.installTap(onBus: 0, bufferSize: 4096, format: format) { [weak self] buffer, _ in
             self?.recognitionRequest?.append(buffer)
         }
-
         audioEngine.prepare()
         try audioEngine.start()
         return request
     }
 
-    private func beginSessionForText() throws {
-        let request = try setupAudioEngine()
-        recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
-            guard let self else { return }
-            if let result {
-                self.lastHeardText = result.bestTranscription.formattedString
-            }
-            if error != nil || result?.isFinal == true {
-                self.stopListening()
-            }
-        }
-    }
+    // MARK: - Private: score session
 
-    private func beginSession(par: Int, onScore: @escaping (Int) -> Void) throws {
-        let request = try setupAudioEngine()
+    private func beginScoreSession(par: Int, onScore: @escaping @MainActor (Int) -> Void) throws {
+        let request = try makeRequest(contextual: ScoreParser.contextualStrings)
+
+        scheduleTimeout(Self.scoreTimeout)
+
         recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
             guard let self else { return }
 
             if let result {
                 let text = result.bestTranscription.formattedString
-                self.lastHeardText = text
+                DispatchQueue.main.async { self.lastHeardText = text }
 
                 if let score = ScoreParser.parse(text, par: par) {
                     self.stopListening()
-                    onScore(score)
+                    Task { await MainActor.run { onScore(score) } }
+                    return
                 }
             }
 
             if error != nil || result?.isFinal == true {
-                self.stopListening()
+                DispatchQueue.main.async { self.stopListening() }
             }
+        }
+    }
+
+    // MARK: - Private: free-text session
+
+    private func beginTextSession() throws {
+        let request = try makeRequest(contextual: [])
+
+        scheduleTimeout(Self.textTimeout)
+
+        recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
+            guard let self else { return }
+
+            if let result {
+                let text = result.bestTranscription.formattedString
+                DispatchQueue.main.async {
+                    self.lastHeardText = text
+                    // Reset timeout on each new partial result (user is still speaking)
+                    self.scheduleTimeout(Self.textTimeout)
+                }
+            }
+
+            // For free-text mode, don't auto-stop on isFinal — the user taps to finish.
+            // Only stop on hard error.
+            if let error = error as NSError?, error.code != 203 {
+                // code 203 = recognition cancelled, which we trigger ourselves
+                DispatchQueue.main.async { self.stopListening() }
+            }
+        }
+    }
+
+    // MARK: - Silence timeout
+
+    private func scheduleTimeout(_ interval: TimeInterval) {
+        silenceTimer?.invalidate()
+        silenceTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
+            self?.stopListening()
         }
     }
 }
