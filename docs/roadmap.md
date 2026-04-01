@@ -12,6 +12,9 @@ Features are listed in rough priority order. Each gets a feature spec in docs/fe
 ## Next Up (in order)
 - [ ] 006 — SwiftData persistence (save rounds across launches)
 - [ ] 007 — Match play with handicap-stroke scoring
+- [ ] 008 — Pre-scheduled matches + live scoreboards (requires D08 auth)
+      Short code / invite link to share match before round. Live scoreboard in-app and on web.
+      All formats: stroke play, match play. See docs/features/008-live-scoreboards.md.
 
 ## Design & Branding
 See `docs/design.md` for the full app specification, design system, and screen implementation priority.
@@ -25,6 +28,7 @@ See `docs/design.md` for the full app specification, design system, and screen i
 - [ ] **D07** — GPS rangefinder (CoreLocation yardage to green)
 - [ ] **D08** — Auth (Sign in with Apple + email)
 - [ ] **D09** — Buddy feed + group tournament
+- [ ] **D10** — Hosting & permissions (domain, infrastructure, user/group access model — prerequisite for 008)
 
 ## Backlog
 
@@ -46,25 +50,18 @@ See `docs/design.md` for the full app specification, design system, and screen i
   - Future: saved player profiles carry their handicap forward
 
 ### Game Formats
-- [ ] Match Play (with and without handicaps)
-- [ ] Best Ball / Four Ball
-- [ ] Wolf
-- [ ] 5-3-1
-- [ ] Alternate Shot (Foursomes)
+- [ ] 009 — Additional game formats (Best Ball, Wolf, 5-3-1, Alternate Shot) — see docs/features/009-game-formats.md
+
+### Advanced Voice
+- [ ] 010 — Multi-player voice score entry in one utterance — see docs/features/010-multi-player-voice-entry.md
+
+### Courses
+- [ ] 011 — Course database (real hole pars, yardages, stroke indexes, slope/rating) — see docs/features/011-course-database.md
 
 ### Persistence & Data
 - [ ] Saved player profiles with historical rounds
 - [ ] Round history view on home screen
 
-### Courses
-- [ ] Course database with real hole pars, yardages, and stroke indexes
-- [ ] Slope rating + course rating for handicap calculation
-- [ ] Scorecard photo scanning for course config
-
 ### Social
 - [ ] Shot / round sharing
 - [ ] Video highlights
-
-### Advanced Voice
-- [ ] Voice commands for navigation ("next hole", "go back")
-- [ ] Multi-player score entry in one utterance on round screen
