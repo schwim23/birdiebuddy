@@ -38,6 +38,24 @@ targets:
         NSCameraUsageDescription: "Birdie Buddy uses the camera so you can photograph a scorecard to auto-fill course setup."
         NSPhotoLibraryUsageDescription: "Birdie Buddy reads photos so you can pick a scorecard image to auto-fill course setup."
 
+  BirdieBuddyTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: BirdieBuddyTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.schwim23.BirdieBuddyTests
+        TEST_TARGET_NAME: BirdieBuddy
+        INFOPLIST_FILE: BirdieBuddyTests/Info.plist
+    dependencies:
+      - target: BirdieBuddy
+    info:
+      path: BirdieBuddyTests/Info.plist
+      properties:
+        NSPrincipalClass: ""
+
   BirdieBuddyUITests:
     type: bundle.ui-testing
     platform: iOS
@@ -67,6 +85,8 @@ schemes:
     test:
       config: Debug
       targets:
+        - name: BirdieBuddyTests
+          parallelizable: true
         - name: BirdieBuddyUITests
           parallelizable: false
     profile:

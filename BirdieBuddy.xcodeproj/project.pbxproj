@@ -14,12 +14,14 @@
 		17F9F862FEC5051DCFBC0009 /* ScorecardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8059089E8512BC5DF8890888 /* ScorecardView.swift */; };
 		18908BFE9234619F7723DF28 /* PlayerParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC88B406A4C96604DAE982B1 /* PlayerParser.swift */; };
 		19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7BB08CF3B060254E0A4BE8 /* Player.swift */; };
+		1CC8F82E2A4822A35C818223 /* PlayerParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */; };
 		29C1D09117B1DDC195CD5239 /* CourseSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */; };
 		342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E685FFC2CF7EB0C9A3E9536 /* Course.swift */; };
 		3EACD22E2A8A884E7B7D86B9 /* PlayerProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641E694C891613E89075E44A /* PlayerProfile.swift */; };
 		5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */; };
 		6DB9E6C3E7BDC148F9B52391 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */; };
 		79A7DD4CAEDE17470610636A /* PlayerScoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F6763AC38DC3FD1E086512 /* PlayerScoreRow.swift */; };
+		84BC85AC7F79C7CFE72DA44B /* ScoreParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EA8E57C398CA490A389D082 /* ScoreParserTests.swift */; };
 		8ADA50C3D9A4195184F6CEE5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975093227D8F112FB51AD0D /* AppRouter.swift */; };
 		A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */; };
 		A86D540EDC3252EABCACB787 /* CourseSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911B1C521BBC285C998C5E35 /* CourseSetupView.swift */; };
@@ -30,10 +32,18 @@
 		CC475248FE9310D2A7ABDE9A /* StartRoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A5BD70B1E470F646464B6F /* StartRoundTests.swift */; };
 		E7DD3D2DA3EBEEC4561698EC /* ScoreParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */; };
 		F27507B054167553FF1C6385 /* ScorecardParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E193AD07CFE0270D802846B /* ScorecardParser.swift */; };
+		FFCED4D5A4F273472C1376DD /* SpeechRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F246B70BD4BF49BE000F44 /* SpeechRecognizerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		377B6479F6806D7C44766240 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4D7F33B9A84751E9ABA93D18 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 03E856240B6C97A709FD97F4;
+			remoteInfo = BirdieBuddy;
+		};
+		C55E9B244D5B71BF8C28960A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4D7F33B9A84751E9ABA93D18 /* Project object */;
 			proxyType = 1;
@@ -45,6 +55,7 @@
 /* Begin PBXFileReference section */
 		0E193AD07CFE0270D802846B /* ScorecardParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardParser.swift; sourceTree = "<group>"; };
 		184827BB522982A2AC458814 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
+		18F246B70BD4BF49BE000F44 /* SpeechRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognizerTests.swift; sourceTree = "<group>"; };
 		1E685FFC2CF7EB0C9A3E9536 /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 		1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdieBuddyApp.swift; sourceTree = "<group>"; };
@@ -53,9 +64,11 @@
 		37A5BD70B1E470F646464B6F /* StartRoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRoundTests.swift; sourceTree = "<group>"; };
 		3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreParser.swift; sourceTree = "<group>"; };
 		48F00EC6675253BFB8B56E7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4EA8E57C398CA490A389D082 /* ScoreParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreParserTests.swift; sourceTree = "<group>"; };
 		5975093227D8F112FB51AD0D /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		641E694C891613E89075E44A /* PlayerProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProfile.swift; sourceTree = "<group>"; };
 		65E87B6ACC97564FAB0EB09E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		7355399B09C1090B63728716 /* BirdieBuddyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdieBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8059089E8512BC5DF8890888 /* ScorecardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardView.swift; sourceTree = "<group>"; };
 		911B1C521BBC285C998C5E35 /* CourseSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSetupView.swift; sourceTree = "<group>"; };
 		9217713B9A056E0D5307B144 /* RoundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundView.swift; sourceTree = "<group>"; };
@@ -63,7 +76,9 @@
 		96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterScoreTests.swift; sourceTree = "<group>"; };
 		9C3D1CBD97543D82055158AC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A54BCA225C51C2C942C06DC9 /* RoundRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundRecord.swift; sourceTree = "<group>"; };
+		A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerParserTests.swift; sourceTree = "<group>"; };
 		AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSetup.swift; sourceTree = "<group>"; };
+		B28A9A921A24F9D3DB63C4EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C7784D123F20FDA74F66AC33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CA89C01181CD5AFD4D67F9A4 /* BirdieBuddyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdieBuddyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7BB08CF3B060254E0A4BE8 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -116,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				552A724EA14A51CFAE44753C /* BirdieBuddy */,
+				C7F9017BD37F9BAD5F0D9C9F /* BirdieBuddyTests */,
 				F798F24663A521E65D22617D /* BirdieBuddyUITests */,
 				DD426F43DD153E6CF03AB8A2 /* Products */,
 			);
@@ -135,10 +151,22 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		C7F9017BD37F9BAD5F0D9C9F /* BirdieBuddyTests */ = {
+			isa = PBXGroup;
+			children = (
+				B28A9A921A24F9D3DB63C4EF /* Info.plist */,
+				A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */,
+				4EA8E57C398CA490A389D082 /* ScoreParserTests.swift */,
+				18F246B70BD4BF49BE000F44 /* SpeechRecognizerTests.swift */,
+			);
+			path = BirdieBuddyTests;
+			sourceTree = "<group>";
+		};
 		DD426F43DD153E6CF03AB8A2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				DED07D1C3A1137DF9D44116F /* BirdieBuddy.app */,
+				7355399B09C1090B63728716 /* BirdieBuddyTests.xctest */,
 				CA89C01181CD5AFD4D67F9A4 /* BirdieBuddyUITests.xctest */,
 			);
 			name = Products;
@@ -175,6 +203,24 @@
 			productReference = DED07D1C3A1137DF9D44116F /* BirdieBuddy.app */;
 			productType = "com.apple.product-type.application";
 		};
+		2BDBEDFDB39C14676E69630F /* BirdieBuddyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 86C33F7C721EFE5D8BA1D817 /* Build configuration list for PBXNativeTarget "BirdieBuddyTests" */;
+			buildPhases = (
+				D40ECBA2F1D6334989A82FF2 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0C9D739F41108464EFA61D08 /* PBXTargetDependency */,
+			);
+			name = BirdieBuddyTests;
+			packageProductDependencies = (
+			);
+			productName = BirdieBuddyTests;
+			productReference = 7355399B09C1090B63728716 /* BirdieBuddyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C1C237C88100CC42D4C5B947 /* BirdieBuddyUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EE6820230B705C6860F2EBAF /* Build configuration list for PBXNativeTarget "BirdieBuddyUITests" */;
@@ -206,6 +252,11 @@
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
+					2BDBEDFDB39C14676E69630F = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+						TestTargetID = 03E856240B6C97A709FD97F4;
+					};
 					C1C237C88100CC42D4C5B947 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -228,6 +279,7 @@
 			projectRoot = "";
 			targets = (
 				03E856240B6C97A709FD97F4 /* BirdieBuddy */,
+				2BDBEDFDB39C14676E69630F /* BirdieBuddyTests */,
 				C1C237C88100CC42D4C5B947 /* BirdieBuddyUITests */,
 			);
 		};
@@ -272,6 +324,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D40ECBA2F1D6334989A82FF2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CC8F82E2A4822A35C818223 /* PlayerParserTests.swift in Sources */,
+				84BC85AC7F79C7CFE72DA44B /* ScoreParserTests.swift in Sources */,
+				FFCED4D5A4F273472C1376DD /* SpeechRecognizerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DC763F015A3467A6DCF93F69 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -288,6 +350,11 @@
 			isa = PBXTargetDependency;
 			target = 03E856240B6C97A709FD97F4 /* BirdieBuddy */;
 			targetProxy = 377B6479F6806D7C44766240 /* PBXContainerItemProxy */;
+		};
+		0C9D739F41108464EFA61D08 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 03E856240B6C97A709FD97F4 /* BirdieBuddy */;
+			targetProxy = C55E9B244D5B71BF8C28960A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -470,6 +537,25 @@
 			};
 			name = Debug;
 		};
+		64B48E5E5A8BFB8E39CC0E70 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BirdieBuddyTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.schwim23.BirdieBuddyTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BirdieBuddy.app/BirdieBuddy";
+				TEST_TARGET_NAME = BirdieBuddy;
+			};
+			name = Release;
+		};
 		6F69F813481CFCD80103F8E2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -489,6 +575,25 @@
 			};
 			name = Release;
 		};
+		B24A4592365DCD7068AF148C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BirdieBuddyTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.schwim23.BirdieBuddyTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BirdieBuddy.app/BirdieBuddy";
+				TEST_TARGET_NAME = BirdieBuddy;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -506,6 +611,15 @@
 			buildConfigurations = (
 				56CA956559251763FA2A873B /* Debug */,
 				494F31943B369D52A9146068 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		86C33F7C721EFE5D8BA1D817 /* Build configuration list for PBXNativeTarget "BirdieBuddyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B24A4592365DCD7068AF148C /* Debug */,
+				64B48E5E5A8BFB8E39CC0E70 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

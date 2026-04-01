@@ -55,6 +55,17 @@
       <Testables>
          <TestableReference
             skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2BDBEDFDB39C14676E69630F"
+               BuildableName = "BirdieBuddyTests.xctest"
+               BlueprintName = "BirdieBuddyTests"
+               ReferencedContainer = "container:BirdieBuddy.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
