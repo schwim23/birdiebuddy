@@ -80,18 +80,35 @@ struct HomeView: View {
     // MARK: - Start button
 
     private var startButton: some View {
-        Button {
-            router.navigate(to: .setup)
-        } label: {
-            Text("Start New Round")
-                .font(.title3.weight(.semibold))
-                .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(Color.emerald)
-                .foregroundStyle(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+        VStack(spacing: 10) {
+            Button {
+                router.navigate(to: .setup)
+            } label: {
+                Text("Start New Round")
+                    .font(.title3.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .background(Color.emerald)
+                    .foregroundStyle(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .accessibilityIdentifier("home.startRoundButton")
+
+            if !allRounds.isEmpty {
+                Button {
+                    router.navigate(to: .stats)
+                } label: {
+                    Text("My Stats")
+                        .font(.subheadline.weight(.medium))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .background(Color(.systemGray6))
+                        .foregroundStyle(.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .accessibilityIdentifier("home.statsButton")
+            }
         }
-        .accessibilityIdentifier("home.startRoundButton")
     }
 
     // MARK: - Recent rounds
