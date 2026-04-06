@@ -21,6 +21,7 @@ struct BirdieBuddyApp: App {
                         case .scorecard:          ScorecardView()
                         case .newCourse:          CourseSetupView()
                         case .editCourse(let c):  CourseSetupView(existingCourse: c)
+                        case .stats:              StatsView()
                         }
                     }
             }

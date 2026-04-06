@@ -135,7 +135,8 @@ struct SummaryView: View {
         let record = RoundRecord(
             date: Date(),
             players: appState.players,
-            scores: appState.scores
+            scores: appState.scores,
+            roundPar: appState.roundPar
         )
         modelContext.insert(record)
 
