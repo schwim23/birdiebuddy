@@ -6,9 +6,9 @@ struct RoundView: View {
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var displayHole: Int = 1
     @State private var isDictatingAll = false
+    @State private var showWolfPicker = false
 
     private var currentPar: Int { appState.par(for: displayHole) }
-
     private var isOnLeadingHole: Bool { displayHole == appState.currentHole }
     private var canGoBack: Bool { displayHole > 1 }
     private var canGoForward: Bool { displayHole < 18 }
@@ -48,18 +48,22 @@ struct RoundView: View {
             .padding(.top, 32)
             .padding(.bottom, 12)
 
-            // MARK: Match status banner
-            if appState.gameFormat == .matchPlay {
-                matchStatusBanner.padding(.bottom, 12)
+            // MARK: Format status banner
+            if !appState.statusText.isEmpty {
+                statusBanner.padding(.bottom, 12)
+            }
+
+            // MARK: Wolf indicator + decision
+            if appState.gameFormat == .wolf {
+                wolfHeader.padding(.bottom, 8)
             }
 
             // MARK: Player score table
             playerTable
                 .padding(.horizontal)
 
-            // MARK: Hole result (match play — shown once both players have scored)
-            if appState.gameFormat == .matchPlay,
-               let result = appState.matchHoleResult(for: displayHole) {
+            // MARK: Hole result overlay
+            if let result = holeResult(for: displayHole) {
                 holeResultView(result).padding(.top, 12)
             }
 
@@ -86,6 +90,9 @@ struct RoundView: View {
                 .accessibilityIdentifier("round.scorecardButton")
             }
         }
+        .sheet(isPresented: $showWolfPicker) {
+            wolfPickerSheet
+        }
         .onAppear {
             displayHole = appState.currentHole
         }
@@ -104,11 +111,11 @@ struct RoundView: View {
         }
     }
 
-    // MARK: - Match status banner
+    // MARK: - Status banner
 
-    private var matchStatusBanner: some View {
-        Text(appState.matchStatusText)
-            .font(.headline)
+    private var statusBanner: some View {
+        Text(appState.statusText)
+            .font(.subheadline.weight(.semibold))
             .padding(.horizontal, 20).padding(.vertical, 8)
             .background(Color.green.opacity(0.12))
             .foregroundStyle(Color.green)
@@ -116,13 +123,105 @@ struct RoundView: View {
             .accessibilityIdentifier("round.matchStatusLabel")
     }
 
-    // MARK: - Hole result (match play)
+    // MARK: - Wolf header
+
+    private var wolfHeader: some View {
+        HStack(spacing: 12) {
+            if let wolf = appState.wolfPlayer(for: displayHole) {
+                Label("Wolf: \(wolf.name)", systemImage: "pawprint.fill")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.orange)
+                    .accessibilityIdentifier("round.wolfIndicator")
+            }
+            Spacer()
+            let decided = appState.wolfHoleStates[displayHole]?.isDecided ?? false
+            Button(decided ? "Change Decision" : "Set Wolf Decision") {
+                showWolfPicker = true
+            }
+            .font(.caption.weight(.semibold))
+            .padding(.horizontal, 12).padding(.vertical, 6)
+            .background(Color.orange.opacity(0.12))
+            .foregroundStyle(.orange)
+            .clipShape(Capsule())
+            .accessibilityIdentifier("round.wolfPicker")
+        }
+        .padding(.horizontal)
+    }
+
+    // MARK: - Wolf picker sheet
+
+    private var wolfPickerSheet: some View {
+        NavigationStack {
+            List {
+                let wolfID = appState.wolfPlayer(for: displayHole)?.id
+                let nonWolves = appState.players.filter { $0.id != wolfID }
+
+                Section("Choose Partner") {
+                    ForEach(nonWolves) { player in
+                        Button {
+                            appState.setWolfDecision(for: displayHole, partnerID: player.id)
+                            showWolfPicker = false
+                        } label: {
+                            HStack {
+                                Text("Partner with \(player.name)")
+                                Spacer()
+                                let state = appState.wolfHoleStates[displayHole]
+                                if state?.partnerPlayerID == player.id && state?.isDecided == true {
+                                    Image(systemName: "checkmark").foregroundStyle(.green)
+                                }
+                            }
+                        }
+                        .foregroundStyle(.primary)
+                    }
+                }
+
+                Section {
+                    Button {
+                        appState.setWolfDecision(for: displayHole, partnerID: nil)
+                        showWolfPicker = false
+                    } label: {
+                        HStack {
+                            Text("Go Alone (Lone Wolf)")
+                                .foregroundStyle(.orange)
+                            Spacer()
+                            let state = appState.wolfHoleStates[displayHole]
+                            if state?.isLoneWolf == true && state?.isDecided == true {
+                                Image(systemName: "checkmark").foregroundStyle(.green)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Wolf Decision — Hole \(displayHole)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { showWolfPicker = false }
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+
+    // MARK: - Hole result
+
+    private func holeResult(for hole: Int) -> HoleResult? {
+        switch appState.gameFormat {
+        case .matchPlay:  return appState.matchHoleResult(for: hole)
+        case .bestBall:   return appState.bestBallHoleResult(for: hole)
+        default:          return nil
+        }
+    }
 
     @ViewBuilder
     private func holeResultView(_ result: HoleResult) -> some View {
         switch result {
         case .playerWins(let p):
             Text("\(p.name) wins the hole")
+                .font(.subheadline).foregroundStyle(.primary)
+                .padding(.horizontal)
+        case .teamWins(let t):
+            Text("Team \(appState.teamName(t)) wins the hole")
                 .font(.subheadline).foregroundStyle(.primary)
                 .padding(.horizontal)
         case .halved:
