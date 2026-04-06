@@ -9,9 +9,11 @@ enum SpeechRecognizerState {
     case unavailable
 }
 
-/// Wraps SFSpeechRecognizer for two modes:
-///   • Score entry  — `startListening(par:onScore:)` — fires callback on first valid score, then stops.
-///   • Free text    — `startListeningForText()` — streams `lastHeardText` until `stopListening()` is called.
+/// Wraps SFSpeechRecognizer for three modes:
+///   • Score entry   — `startListening(par:onScore:)` — fires callback on first valid score, then stops.
+///   • Free text     — `startListeningForText()` — streams `lastHeardText` until `stopListening()` is called.
+///   • Multi-score   — `startListeningForMultiScore(players:par:onScores:)` — streams until silence, then
+///                     parses all player scores from the full utterance and fires callback.
 ///
 /// All @Observable property mutations are dispatched to the main actor.
 /// Audio engine and AVAudioSession work happens on the calling thread (always main in practice).
@@ -29,8 +31,9 @@ final class SpeechRecognizer {
     private var silenceTimer: Timer?
 
     /// Seconds of inactivity before the listening session auto-cancels.
-    private static let scoreTimeout: TimeInterval = 10
-    private static let textTimeout: TimeInterval  = 20
+    private static let scoreTimeout:      TimeInterval = 10
+    private static let textTimeout:       TimeInterval = 20
+    private static let multiScoreTimeout: TimeInterval = 15
 
     // MARK: - Permissions
 
@@ -59,6 +62,20 @@ final class SpeechRecognizer {
         guard isAvailable, state == .idle else { return }
         do {
             try beginScoreSession(par: par, onScore: onScore)
+            state = .listening
+        } catch {
+            state = .idle
+        }
+    }
+
+    /// Listens for all players' scores in a single utterance.
+    /// Resets the silence timer on each partial result. When silence is detected,
+    /// parses the full utterance via `MultiScoreParser` and fires `onScores` on the main actor.
+    func startListeningForMultiScore(players: [Player], par: Int,
+                                     onScores: @escaping @MainActor ([MultiScoreParser.ParsedScore]) -> Void) {
+        guard isAvailable, state == .idle else { return }
+        do {
+            try beginMultiScoreSession(players: players, par: par, onScores: onScores)
             state = .listening
         } catch {
             state = .idle
@@ -149,6 +166,33 @@ final class SpeechRecognizer {
         }
     }
 
+    // MARK: - Private: multi-score session
+
+    private func beginMultiScoreSession(players: [Player], par: Int,
+                                        onScores: @escaping @MainActor ([MultiScoreParser.ParsedScore]) -> Void) throws {
+        let playerHints = players.compactMap { $0.name.components(separatedBy: " ").first?.lowercased() }
+        let request = try makeRequest(contextual: ScoreParser.contextualStrings + playerHints)
+
+        scheduleMultiScoreTimeout(players: players, par: par, onScores: onScores)
+
+        recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
+            guard let self else { return }
+
+            if let result {
+                let text = result.bestTranscription.formattedString
+                DispatchQueue.main.async {
+                    self.lastHeardText = text
+                    // Reset timeout on each partial — user may still be speaking
+                    self.scheduleMultiScoreTimeout(players: players, par: par, onScores: onScores)
+                }
+            }
+
+            if let error = error as NSError?, error.code != 203 {
+                DispatchQueue.main.async { self.stopListening() }
+            }
+        }
+    }
+
     // MARK: - Private: free-text session
 
     private func beginTextSession() throws {
@@ -183,6 +227,19 @@ final class SpeechRecognizer {
         silenceTimer?.invalidate()
         silenceTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
             self?.stopListening()
+        }
+    }
+
+    private func scheduleMultiScoreTimeout(players: [Player], par: Int,
+                                           onScores: @escaping @MainActor ([MultiScoreParser.ParsedScore]) -> Void) {
+        silenceTimer?.invalidate()
+        silenceTimer = Timer.scheduledTimer(withTimeInterval: Self.multiScoreTimeout, repeats: false) { [weak self] _ in
+            guard let self else { return }
+            let text = self.lastHeardText
+            self.stopListening()
+            let scores = MultiScoreParser.parse(text, players: players, par: par)
+            guard !scores.isEmpty else { return }
+            Task { await MainActor.run { onScores(scores) } }
         }
     }
 }

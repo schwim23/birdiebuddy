@@ -5,6 +5,7 @@ struct RoundView: View {
     @Environment(AppRouter.self) private var router
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var displayHole: Int = 1
+    @State private var isDictatingAll = false
 
     private var currentPar: Int { appState.par(for: displayHole) }
 
@@ -65,6 +66,10 @@ struct RoundView: View {
             // MARK: Mic
             if speechRecognizer.state != .unavailable {
                 micSection.padding(.top, 20)
+            }
+            // MARK: Dictate All (multi-player only)
+            if appState.players.count > 1, speechRecognizer.state != .unavailable {
+                dictateAllSection.padding(.top, 8)
             }
 
             Spacer()
@@ -180,16 +185,63 @@ struct RoundView: View {
         .padding(.horizontal)
     }
 
+    // MARK: - Dictate All
+
+    private var dictateAllSection: some View {
+        VStack(spacing: 8) {
+            Button { toggleDictateAll() } label: {
+                Label(
+                    isDictatingAll ? "Listening…" : "Dictate All Scores",
+                    systemImage: isDictatingAll ? "waveform" : "mic.badge.plus"
+                )
+                .font(.subheadline)
+                .padding(.horizontal, 20).padding(.vertical, 10)
+                .background(isDictatingAll ? Color.orange.opacity(0.15) : Color.blue.opacity(0.1))
+                .foregroundStyle(isDictatingAll ? .orange : .blue)
+                .clipShape(Capsule())
+            }
+            .accessibilityIdentifier("round.dictateAllButton")
+
+            if isDictatingAll, !speechRecognizer.lastHeardText.isEmpty {
+                Text("\"\(speechRecognizer.lastHeardText)\"")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal)
+    }
+
     // MARK: - Actions
 
     private func toggleListening() {
         if speechRecognizer.state == .listening {
+            isDictatingAll = false
             speechRecognizer.stopListening()
         } else {
+            isDictatingAll = false
             let player = appState.players.first(where: { appState.score(for: $0, hole: displayHole) == nil })
             guard let player else { return }
             speechRecognizer.startListening(par: currentPar) { score in
                 appState.recordScore(score, forHole: displayHole, player: player)
+            }
+        }
+    }
+
+    private func toggleDictateAll() {
+        if speechRecognizer.state == .listening {
+            isDictatingAll = false
+            speechRecognizer.stopListening()
+        } else {
+            isDictatingAll = true
+            speechRecognizer.lastHeardText = ""
+            speechRecognizer.startListeningForMultiScore(
+                players: appState.players,
+                par: currentPar
+            ) { [self] parsedScores in
+                isDictatingAll = false
+                for ps in parsedScores {
+                    guard let player = appState.players.first(where: { $0.name == ps.playerName }) else { continue }
+                    appState.recordScore(ps.strokes, forHole: displayHole, player: player)
+                }
             }
         }
     }
