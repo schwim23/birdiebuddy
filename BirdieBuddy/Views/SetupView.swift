@@ -12,6 +12,9 @@ struct SetupView: View {
     @State private var roundPlayers: [Player] = []
     @State private var gameFormat: GameFormat = .strokePlay
     @State private var selectedCourseID: UUID? = nil   // nil = Default
+    @State private var selectedCourseRecord: CourseRecord? = nil
+    @State private var selectedTee: String = ""
+    @State private var showCoursePicker = false
     @State private var newName = ""
     @State private var newHandicap = 0
     @State private var showSavedPlayers = false
@@ -157,30 +160,57 @@ struct SetupView: View {
                     Label("Course", systemImage: "flag.fill")
                         .font(.headline)
 
-                    Picker("Course", selection: $selectedCourseID) {
-                        Text("Default (Par 72)").tag(UUID?.none)
-                        ForEach(savedCourses) { course in
-                            Text(course.name).tag(UUID?.some(course.id))
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .accessibilityIdentifier("setup.coursePicker")
-
                     Button {
-                        router.navigate(to: .newCourse)
+                        showCoursePicker = true
                     } label: {
-                        Label("Set up new course", systemImage: "plus.circle")
-                            .font(.subheadline)
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                if let record = selectedCourseRecord {
+                                    Text(record.name).font(.body).foregroundStyle(.primary)
+                                    Text("\(record.city), \(record.state) — \(selectedTee) tees")
+                                        .font(.caption).foregroundStyle(.secondary)
+                                } else if let course = selectedCourse {
+                                    Text(course.name).font(.body).foregroundStyle(.primary)
+                                    Text("Custom course").font(.caption).foregroundStyle(.secondary)
+                                } else {
+                                    Text("Default (Par 72)").font(.body).foregroundStyle(.secondary)
+                                }
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right").foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 14)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                    .accessibilityIdentifier("setup.newCourseButton")
+                    .accessibilityIdentifier("setup.coursePickerButton")
 
-                    if let course = selectedCourse {
+                    if selectedCourseRecord == nil {
+                        Picker("Custom Course", selection: $selectedCourseID) {
+                            Text("Default (Par 72)").tag(UUID?.none)
+                            ForEach(savedCourses) { course in
+                                Text(course.name).tag(UUID?.some(course.id))
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .accessibilityIdentifier("setup.coursePicker")
+                    }
+
+                    if let course = selectedCourse, selectedCourseRecord == nil {
                         Button {
                             router.navigate(to: .editCourse(course))
                         } label: {
                             Label("Edit \(course.name)", systemImage: "pencil")
                                 .font(.subheadline)
                         }
+                    }
+                }
+                .sheet(isPresented: $showCoursePicker) {
+                    CoursePickerView { record, tee in
+                        selectedCourseRecord = record
+                        selectedTee = tee
+                        selectedCourseID = nil
                     }
                 }
 
@@ -201,11 +231,14 @@ struct SetupView: View {
 
                 // MARK: Start round
                 Button("Start Round") {
-                    appState.startRound(
-                        with: roundPlayers,
-                        format: roundPlayers.count == 2 ? gameFormat : .strokePlay,
-                        course: selectedCourse
-                    )
+                    let format = roundPlayers.count == 2 ? gameFormat : .strokePlay
+                    if let record = selectedCourseRecord {
+                        appState.startRound(with: roundPlayers, format: format,
+                                            courseRecord: record, tee: selectedTee)
+                    } else {
+                        appState.startRound(with: roundPlayers, format: format,
+                                            course: selectedCourse)
+                    }
                     router.navigate(to: .round)
                 }
                 .disabled(roundPlayers.isEmpty)

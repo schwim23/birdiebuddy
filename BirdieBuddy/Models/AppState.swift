@@ -33,6 +33,16 @@ final class AppState {
         roundStrokeIndex = course?.strokeIndexDict ?? Course.defaultStrokeIndex
     }
 
+    func startRound(with players: [Player], format: GameFormat = .strokePlay, courseRecord: CourseRecord, tee: String) {
+        self.players = players
+        self.gameFormat = format
+        currentHole = 1
+        isRoundActive = true
+        scores = [:]
+        roundPar = courseRecord.parDict
+        roundStrokeIndex = courseRecord.strokeIndexDict
+    }
+
     // MARK: - Scoring
 
     func score(for player: Player, hole: Int) -> Int? {
