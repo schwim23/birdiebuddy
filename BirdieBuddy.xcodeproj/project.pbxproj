@@ -29,9 +29,11 @@
 		AA82BBCE918EF6BD64B36202 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48F00EC6675253BFB8B56E7F /* Assets.xcassets */; };
 		ACE201F14772659424B17248 /* MatchPlayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B717F4A31CDDA74DD2C1E97 /* MatchPlayTests.swift */; };
 		B08F9E1A5191CA280B77C6D6 /* EnterScoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D6AC15F1A3AC90E6E46DE4 /* EnterScoreTests.swift */; };
+		B0DE00022005D64607530CBB /* MultiScoreParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE168AA29F0AFF68EE2081BB /* MultiScoreParserTests.swift */; };
 		BA16CC41782285A42E874B40 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3D1CBD97543D82055158AC /* HomeView.swift */; };
 		C72281D8AD37784C141931CA /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */; };
 		CC475248FE9310D2A7ABDE9A /* StartRoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A5BD70B1E470F646464B6F /* StartRoundTests.swift */; };
+		E6F9F623C59B839D0D304689 /* MultiScoreParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46804C8AC0FA72373726ACE5 /* MultiScoreParser.swift */; };
 		E7DD3D2DA3EBEEC4561698EC /* ScoreParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */; };
 		E8E6BDC73FE39D8AC73CC2AA /* ScorecardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B019E86723609B9A489910 /* ScorecardTests.swift */; };
 		EB29CB600E75BEB7F7F071E1 /* SavedPlayersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183ABE8E810C345013B5CB04 /* SavedPlayersTests.swift */; };
@@ -69,6 +71,7 @@
 		315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognizer.swift; sourceTree = "<group>"; };
 		37A5BD70B1E470F646464B6F /* StartRoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRoundTests.swift; sourceTree = "<group>"; };
 		3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreParser.swift; sourceTree = "<group>"; };
+		46804C8AC0FA72373726ACE5 /* MultiScoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiScoreParser.swift; sourceTree = "<group>"; };
 		48F00EC6675253BFB8B56E7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4EA8E57C398CA490A389D082 /* ScoreParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreParserTests.swift; sourceTree = "<group>"; };
 		5975093227D8F112FB51AD0D /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
@@ -89,6 +92,7 @@
 		B28A9A921A24F9D3DB63C4EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C7784D123F20FDA74F66AC33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CA89C01181CD5AFD4D67F9A4 /* BirdieBuddyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdieBuddyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE168AA29F0AFF68EE2081BB /* MultiScoreParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiScoreParserTests.swift; sourceTree = "<group>"; };
 		CE7BB08CF3B060254E0A4BE8 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		DC88B406A4C96604DAE982B1 /* PlayerParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerParser.swift; sourceTree = "<group>"; };
@@ -104,6 +108,7 @@
 				1E685FFC2CF7EB0C9A3E9536 /* Course.swift */,
 				AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */,
 				2E41CD192965DA85F0DF1F44 /* GameFormat.swift */,
+				46804C8AC0FA72373726ACE5 /* MultiScoreParser.swift */,
 				CE7BB08CF3B060254E0A4BE8 /* Player.swift */,
 				DC88B406A4C96604DAE982B1 /* PlayerParser.swift */,
 				641E694C891613E89075E44A /* PlayerProfile.swift */,
@@ -163,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				B28A9A921A24F9D3DB63C4EF /* Info.plist */,
+				CE168AA29F0AFF68EE2081BB /* MultiScoreParserTests.swift */,
 				A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */,
 				4EA8E57C398CA490A389D082 /* ScoreParserTests.swift */,
 				18F246B70BD4BF49BE000F44 /* SpeechRecognizerTests.swift */,
@@ -321,6 +327,7 @@
 				A86D540EDC3252EABCACB787 /* CourseSetupView.swift in Sources */,
 				0A84F304D2943325914B3B94 /* GameFormat.swift in Sources */,
 				BA16CC41782285A42E874B40 /* HomeView.swift in Sources */,
+				E6F9F623C59B839D0D304689 /* MultiScoreParser.swift in Sources */,
 				19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */,
 				18908BFE9234619F7723DF28 /* PlayerParser.swift in Sources */,
 				3EACD22E2A8A884E7B7D86B9 /* PlayerProfile.swift in Sources */,
@@ -340,6 +347,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0DE00022005D64607530CBB /* MultiScoreParserTests.swift in Sources */,
 				1CC8F82E2A4822A35C818223 /* PlayerParserTests.swift in Sources */,
 				84BC85AC7F79C7CFE72DA44B /* ScoreParserTests.swift in Sources */,
 				FFCED4D5A4F273472C1376DD /* SpeechRecognizerTests.swift in Sources */,
