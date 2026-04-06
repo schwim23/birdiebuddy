@@ -11,10 +11,11 @@ struct SetupView: View {
 
     @State private var roundPlayers: [Player] = []
     @State private var gameFormat: GameFormat = .strokePlay
-    @State private var selectedCourseID: UUID? = nil   // nil = Default
+    @State private var selectedCourseID: UUID? = nil
     @State private var selectedCourseRecord: CourseRecord? = nil
     @State private var selectedTee: String = ""
     @State private var showCoursePicker = false
+    @State private var teamAssignment: [UUID: Int] = [:]   // playerID → 0 (A) or 1 (B)
     @State private var newName = ""
     @State private var newHandicap = 0
     @State private var showSavedPlayers = false
@@ -22,6 +23,10 @@ struct SetupView: View {
 
     private var selectedCourse: CourseSetup? {
         savedCourses.first { $0.id == selectedCourseID }
+    }
+
+    private var availableFormats: [GameFormat] {
+        GameFormat.allCases.filter { $0.isCompatible(with: roundPlayers.count) }
     }
 
     var body: some View {
@@ -50,6 +55,8 @@ struct SetupView: View {
                                 Spacer()
                                 Button(role: .destructive) {
                                     roundPlayers.removeAll { $0.id == player.id }
+                                    teamAssignment.removeValue(forKey: player.id)
+                                    resetFormatIfNeeded()
                                 } label: {
                                     Image(systemName: "minus.circle").foregroundStyle(.red)
                                 }
@@ -143,6 +150,7 @@ struct SetupView: View {
                                     Button(alreadyAdded ? "Added" : "Add") {
                                         if !alreadyAdded {
                                             roundPlayers.append(profile.asPlayer)
+                                            resetFormatIfNeeded()
                                         }
                                     }
                                     .disabled(alreadyAdded)
@@ -214,32 +222,30 @@ struct SetupView: View {
                     }
                 }
 
-                // MARK: Game format (match play only available for 2 players)
-                if roundPlayers.count == 2 {
-                    VStack(alignment: .leading, spacing: 8) {
+                // MARK: Game format
+                if availableFormats.count > 1 {
+                    VStack(alignment: .leading, spacing: 12) {
                         Label("Format", systemImage: "flag")
                             .font(.headline)
+
                         Picker("Format", selection: $gameFormat) {
-                            ForEach(GameFormat.allCases, id: \.self) { format in
+                            ForEach(availableFormats, id: \.self) { format in
                                 Text(format.rawValue).tag(format)
                             }
                         }
-                        .pickerStyle(.segmented)
+                        .pickerStyle(.menu)
                         .accessibilityIdentifier("setup.formatPicker")
+
+                        // Team assignment for Best Ball (4 players)
+                        if gameFormat == .bestBall && roundPlayers.count == 4 {
+                            teamAssignmentSection
+                        }
                     }
                 }
 
                 // MARK: Start round
                 Button("Start Round") {
-                    let format = roundPlayers.count == 2 ? gameFormat : .strokePlay
-                    if let record = selectedCourseRecord {
-                        appState.startRound(with: roundPlayers, format: format,
-                                            courseRecord: record, tee: selectedTee)
-                    } else {
-                        appState.startRound(with: roundPlayers, format: format,
-                                            course: selectedCourse)
-                    }
-                    router.navigate(to: .round)
+                    startRound()
                 }
                 .disabled(roundPlayers.isEmpty)
                 .font(.title3)
@@ -257,7 +263,70 @@ struct SetupView: View {
         .onDisappear { speechRecognizer.stopListening() }
     }
 
+    // MARK: - Team Assignment (Best Ball)
+
+    private var teamAssignmentSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Team Assignment")
+                .font(.subheadline).fontWeight(.medium)
+
+            ForEach(roundPlayers) { player in
+                teamRow(for: player)
+            }
+        }
+        .accessibilityIdentifier("setup.teamAssignment")
+    }
+
+    private func teamRow(for player: Player) -> some View {
+        HStack {
+            Text(player.name).font(.body)
+            Spacer()
+            Picker("", selection: Binding(
+                get: { teamAssignment[player.id] ?? (defaultTeamIndex(for: player)) },
+                set: { teamAssignment[player.id] = $0 }
+            )) {
+                Text("Team A").tag(0)
+                Text("Team B").tag(1)
+            }
+            .pickerStyle(.segmented)
+            .frame(width: 160)
+            .labelsHidden()
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func defaultTeamIndex(for player: Player) -> Int {
+        roundPlayers.firstIndex(where: { $0.id == player.id }).map { $0 % 2 } ?? 0
+    }
+
     // MARK: - Helpers
+
+    private func effectiveTeams() -> [UUID: Int] {
+        var result = [UUID: Int]()
+        for player in roundPlayers {
+            result[player.id] = teamAssignment[player.id] ?? defaultTeamIndex(for: player)
+        }
+        return result
+    }
+
+    private func resetFormatIfNeeded() {
+        if !availableFormats.contains(gameFormat) {
+            gameFormat = .strokePlay
+        }
+    }
+
+    private func startRound() {
+        let format = availableFormats.contains(gameFormat) ? gameFormat : .strokePlay
+        let teams = gameFormat.isTeamFormat ? effectiveTeams() : [:]
+        if let record = selectedCourseRecord {
+            appState.startRound(with: roundPlayers, format: format,
+                                courseRecord: record, tee: selectedTee, teams: teams)
+        } else {
+            appState.startRound(with: roundPlayers, format: format,
+                                course: selectedCourse, teams: teams)
+        }
+        router.navigate(to: .round)
+    }
 
     private func addManualPlayer() {
         let name = newName.trimmingCharacters(in: .whitespaces)
@@ -265,6 +334,7 @@ struct SetupView: View {
         let player = Player(name: name, handicap: newHandicap)
         roundPlayers.append(player)
         upsertProfile(for: player)
+        resetFormatIfNeeded()
         newName = ""
         newHandicap = 0
     }
@@ -288,9 +358,9 @@ struct SetupView: View {
             roundPlayers.append(player)
             upsertProfile(for: player)
         }
+        resetFormatIfNeeded()
     }
 
-    /// Insert or update a PlayerProfile in SwiftData.
     private func upsertProfile(for player: Player) {
         if let existing = savedProfiles.first(where: { $0.name.lowercased() == player.name.lowercased() }) {
             existing.handicap = player.handicap

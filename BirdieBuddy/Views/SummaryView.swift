@@ -17,16 +17,8 @@ struct SummaryView: View {
             Text("Round Complete!")
                 .font(.largeTitle).fontWeight(.bold)
 
-            // Match play result
-            if appState.gameFormat == .matchPlay {
-                Text(appState.matchStatusText)
-                    .font(.title2).fontWeight(.semibold)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 24).padding(.vertical, 14)
-                    .background(Color.green.opacity(0.12))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .accessibilityIdentifier("summary.matchResultLabel")
-            }
+            // Format result card
+            formatResultCard
 
             // Leading score — always carries summary.totalScoreLabel for test compatibility
             if let leader = sortedPlayers.first {
@@ -74,6 +66,80 @@ struct SummaryView: View {
         .navigationBarBackButtonHidden(true)
         .onAppear {
             saveRoundIfNeeded()
+        }
+    }
+
+    // MARK: - Format Result Card
+
+    @ViewBuilder
+    private var formatResultCard: some View {
+        switch appState.gameFormat {
+        case .matchPlay:
+            Text(appState.matchStatusText)
+                .font(.title2).fontWeight(.semibold)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 24).padding(.vertical, 14)
+                .background(Color.green.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .accessibilityIdentifier("summary.matchResultLabel")
+
+        case .bestBall:
+            VStack(spacing: 6) {
+                Text(appState.bestBallStatusText)
+                    .font(.title2).fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+                Text("Best Ball")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 24).padding(.vertical, 14)
+            .background(Color.green.opacity(0.12))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .accessibilityIdentifier("summary.matchResultLabel")
+
+        case .wolf:
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Wolf — Final Points")
+                    .font(.headline)
+                    .padding(.horizontal, 24)
+                ForEach(appState.wolfStandings, id: \.player.id) { item in
+                    HStack {
+                        Text(item.player.name).font(.body)
+                        Spacer()
+                        Text("\(item.points) pts")
+                            .font(.body).fontWeight(.semibold)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 4)
+                }
+            }
+            .padding(.vertical, 14)
+            .background(Color.green.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .accessibilityIdentifier("summary.pointsTotals")
+
+        case .fiveThreeOne:
+            VStack(alignment: .leading, spacing: 8) {
+                Text("5-3-1 — Final Points")
+                    .font(.headline)
+                    .padding(.horizontal, 24)
+                ForEach(appState.fiveThreeOneStandings, id: \.player.id) { item in
+                    HStack {
+                        Text(item.player.name).font(.body)
+                        Spacer()
+                        Text("\(appState.fiveThreeOnePointsFormatted(item.points)) pts")
+                            .font(.body).fontWeight(.semibold)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 4)
+                }
+            }
+            .padding(.vertical, 14)
+            .background(Color.green.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .accessibilityIdentifier("summary.pointsTotals")
+
+        case .strokePlay:
+            EmptyView()
         }
     }
 

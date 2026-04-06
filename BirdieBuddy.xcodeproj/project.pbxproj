@@ -16,6 +16,7 @@
 		19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7BB08CF3B060254E0A4BE8 /* Player.swift */; };
 		1A2884BAD04435E2122939E5 /* CourseDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDB8A7ECD0F51FBA27945BF /* CourseDatabase.swift */; };
 		1CC8F82E2A4822A35C818223 /* PlayerParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */; };
+		248B3AB9F255063CDAAD739D /* GameFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B073FBF248C2DE4424C08E55 /* GameFormatTests.swift */; };
 		29C1D09117B1DDC195CD5239 /* CourseSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */; };
 		342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E685FFC2CF7EB0C9A3E9536 /* Course.swift */; };
 		3EACD22E2A8A884E7B7D86B9 /* PlayerProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641E694C891613E89075E44A /* PlayerProfile.swift */; };
@@ -100,6 +101,7 @@
 		A54BCA225C51C2C942C06DC9 /* RoundRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundRecord.swift; sourceTree = "<group>"; };
 		A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerParserTests.swift; sourceTree = "<group>"; };
 		AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSetup.swift; sourceTree = "<group>"; };
+		B073FBF248C2DE4424C08E55 /* GameFormatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameFormatTests.swift; sourceTree = "<group>"; };
 		B28A9A921A24F9D3DB63C4EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B4CC0B35DBD9199CC41E411A /* CourseDatabaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDatabaseTests.swift; sourceTree = "<group>"; };
 		C1C416E51C0BBB40E66C9B83 /* CourseRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseRecord.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				B4CC0B35DBD9199CC41E411A /* CourseDatabaseTests.swift */,
+				B073FBF248C2DE4424C08E55 /* GameFormatTests.swift */,
 				B28A9A921A24F9D3DB63C4EF /* Info.plist */,
 				CE168AA29F0AFF68EE2081BB /* MultiScoreParserTests.swift */,
 				A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */,
@@ -383,6 +386,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				76D3A5E5616885242CAEEABF /* CourseDatabaseTests.swift in Sources */,
+				248B3AB9F255063CDAAD739D /* GameFormatTests.swift in Sources */,
 				B0DE00022005D64607530CBB /* MultiScoreParserTests.swift in Sources */,
 				1CC8F82E2A4822A35C818223 /* PlayerParserTests.swift in Sources */,
 				84BC85AC7F79C7CFE72DA44B /* ScoreParserTests.swift in Sources */,
