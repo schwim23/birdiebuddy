@@ -28,6 +28,6 @@ struct BirdieBuddyApp: App {
             .environment(appState)
             .environment(router)
         }
-        .modelContainer(for: [PlayerProfile.self, RoundRecord.self, CourseSetup.self])
+        .modelContainer(for: [PlayerProfile.self, RoundRecord.self, CourseSetup.self, FavoriteCourse.self])
     }
 }
