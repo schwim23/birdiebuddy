@@ -2,6 +2,8 @@
 
 **Status:** Future (required by Feature 013 — Collaborative Rounds; Feature 014 — Events)
 
+> **CloudKit note:** CloudKit authenticates via the user's iCloud account automatically — no token exchange needed for database access. Sign in with Apple is used solely for **identity** (display name, stable user ID stored on `SessionPlayer` records). `AuthService` does not need to verify tokens against a backend.
+
 ---
 
 ## Overview
