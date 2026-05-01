@@ -236,8 +236,8 @@ struct SetupView: View {
                         .pickerStyle(.menu)
                         .accessibilityIdentifier("setup.formatPicker")
 
-                        // Team assignment for Best Ball (4 players)
-                        if gameFormat == .bestBall && roundPlayers.count == 4 {
+                        // Team assignment for team formats (4 players)
+                        if gameFormat.isTeamFormat && roundPlayers.count == 4 {
                             teamAssignmentSection
                         }
                     }

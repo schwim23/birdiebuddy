@@ -30,6 +30,7 @@
 		8ADA50C3D9A4195184F6CEE5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975093227D8F112FB51AD0D /* AppRouter.swift */; };
 		996D1E22CF34DBDDACF2DA3E /* CourseRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C416E51C0BBB40E66C9B83 /* CourseRecord.swift */; };
 		A1F738B289803CC6072F24E8 /* MultiPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B02970669A122699C9487E /* MultiPlayerTests.swift */; };
+		A3D6D4FC9334A65EC0A30BFF /* TeamScoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3876787156F70A14088DA0C /* TeamScoreRow.swift */; };
 		A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */; };
 		A86D540EDC3252EABCACB787 /* CourseSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911B1C521BBC285C998C5E35 /* CourseSetupView.swift */; };
 		AA82BBCE918EF6BD64B36202 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48F00EC6675253BFB8B56E7F /* Assets.xcassets */; };
@@ -113,6 +114,7 @@
 		DC88B406A4C96604DAE982B1 /* PlayerParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerParser.swift; sourceTree = "<group>"; };
 		DED07D1C3A1137DF9D44116F /* BirdieBuddy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BirdieBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC3E6ADA71AE023BCD5D9949 /* FavoriteCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCourse.swift; sourceTree = "<group>"; };
+		F3876787156F70A14088DA0C /* TeamScoreRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamScoreRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -182,6 +184,7 @@
 				1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */,
 				3EF2430DDAD3D45F13F4FB25 /* StatsView.swift */,
 				184827BB522982A2AC458814 /* SummaryView.swift */,
+				F3876787156F70A14088DA0C /* TeamScoreRow.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */,
 				ADBD25DCB3B3CA2A1EE3FA53 /* StatsView.swift in Sources */,
 				11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */,
+				A3D6D4FC9334A65EC0A30BFF /* TeamScoreRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

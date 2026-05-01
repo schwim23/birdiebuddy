@@ -75,6 +75,15 @@ final class AppState {
         guard (1...18).contains(hole) else { return }
         scores[player.id, default: [:]][hole] = strokes
 
+        // Alternate Shot: mirror the score to all teammates so that hole-complete
+        // logic (allSatisfy) and totalScore work uniformly.
+        if gameFormat == .alternateShot {
+            let team = teamAssignments[player.id] ?? 0
+            for teammate in teamPlayers(team: team) where teammate.id != player.id {
+                scores[teammate.id, default: [:]][hole] = strokes
+            }
+        }
+
         // Advance the leading hole once every player has scored this hole.
         if hole >= currentHole && players.allSatisfy({ scores[$0.id]?[hole] != nil }) {
             currentHole = hole + 1
@@ -85,6 +94,9 @@ final class AppState {
             currentHole = 19
         }
         if gameFormat == .bestBall, bestBallIsDecided, !isRoundFinished {
+            currentHole = 19
+        }
+        if gameFormat == .alternateShot, alternateShotIsDecided, !isRoundFinished {
             currentHole = 19
         }
     }
@@ -99,6 +111,8 @@ final class AppState {
             return matchPlayStrokes(for: player, against: opp, on: hole) > 0
         case .bestBall, .wolf, .fiveThreeOne:
             return groupNetStrokes(for: player, on: hole) > 0
+        case .alternateShot:
+            return false  // strokes shown at team level
         case .strokePlay:
             guard player.handicap > 0, let si = roundStrokeIndex[hole] else { return false }
             return si <= player.handicap
@@ -109,11 +123,12 @@ final class AppState {
 
     var statusText: String {
         switch gameFormat {
-        case .strokePlay:  return ""
-        case .matchPlay:   return matchStatusText
-        case .bestBall:    return bestBallStatusText
-        case .wolf:        return wolfStandingsText
-        case .fiveThreeOne: return fiveThreeOneStandingsText
+        case .strokePlay:    return ""
+        case .matchPlay:     return matchStatusText
+        case .bestBall:      return bestBallStatusText
+        case .alternateShot: return alternateShotStatusText
+        case .wolf:          return wolfStandingsText
+        case .fiveThreeOne:  return fiveThreeOneStandingsText
         }
     }
 
@@ -245,6 +260,78 @@ final class AppState {
         if lead > remaining { return "Team \(teamName(leadTeam)) wins \(lead)&\(remaining)" }
         if lead == remaining { return "Dormie \(lead)" }
         return "Team \(teamName(leadTeam)) \(lead) UP"
+    }
+
+    // MARK: - Alternate Shot (Foursomes)
+    //   One score per team per hole. Team handicap = average of partners', rounded.
+
+    func teamHandicap(_ team: Int) -> Int {
+        let members = teamPlayers(team: team)
+        guard !members.isEmpty else { return 0 }
+        let total = members.map(\.handicap).reduce(0, +)
+        return Int(Double(total) / Double(members.count) + 0.5)  // round half-up
+    }
+
+    func alternateShotTeamReceivesStroke(team: Int, on hole: Int) -> Bool {
+        alternateShotStrokes(for: team, on: hole) > 0
+    }
+
+    func alternateShotHoleResult(for hole: Int) -> HoleResult? {
+        guard gameFormat == .alternateShot else { return nil }
+        guard let n0 = alternateShotNetScore(team: 0, hole: hole),
+              let n1 = alternateShotNetScore(team: 1, hole: hole) else { return nil }
+        if n0 < n1 { return .teamWins(teamIndex: 0) }
+        if n1 < n0 { return .teamWins(teamIndex: 1) }
+        return .halved
+    }
+
+    var alternateShotHolesUp: Int {
+        (1...18).reduce(0) { acc, hole in
+            switch alternateShotHoleResult(for: hole) {
+            case .teamWins(let t) where t == 0: return acc + 1
+            case .teamWins:                      return acc - 1
+            default:                             return acc
+            }
+        }
+    }
+
+    var alternateShotHolesPlayed: Int {
+        (1...18).filter { hole in
+            teamPlayers(team: 0).first.flatMap { score(for: $0, hole: hole) } != nil &&
+            teamPlayers(team: 1).first.flatMap { score(for: $0, hole: hole) } != nil
+        }.count
+    }
+
+    var alternateShotIsDecided: Bool { abs(alternateShotHolesUp) > (18 - alternateShotHolesPlayed) }
+
+    var alternateShotStatusText: String {
+        guard gameFormat == .alternateShot else { return "" }
+        let up = alternateShotHolesUp
+        let remaining = 18 - alternateShotHolesPlayed
+        if up == 0 { return "All Square" }
+        let leadTeam = up > 0 ? 0 : 1
+        let lead = abs(up)
+        if lead > remaining { return "Team \(teamName(leadTeam)) wins \(lead)&\(remaining)" }
+        if lead == remaining { return "Dormie \(lead)" }
+        return "Team \(teamName(leadTeam)) \(lead) UP"
+    }
+
+    private func alternateShotNetScore(team: Int, hole: Int) -> Int? {
+        guard let captain = teamPlayers(team: team).first,
+              let gross = score(for: captain, hole: hole) else { return nil }
+        return gross - alternateShotStrokes(for: team, on: hole)
+    }
+
+    private func alternateShotStrokes(for team: Int, on hole: Int) -> Int {
+        let h0 = teamHandicap(0), h1 = teamHandicap(1)
+        let myHcp = team == 0 ? h0 : h1
+        let oppHcp = team == 0 ? h1 : h0
+        let diff = myHcp - oppHcp
+        guard diff > 0, let si = roundStrokeIndex[hole] else { return 0 }
+        var s = 0
+        if si <= diff      { s += 1 }
+        if si <= diff - 18 { s += 1 }
+        return s
     }
 
     // MARK: - 5-3-1

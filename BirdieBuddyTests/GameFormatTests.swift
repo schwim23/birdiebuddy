@@ -38,13 +38,12 @@ struct GroupNetTests {
 
     @Test("handicap differential allocates strokes by SI")
     func strokesByDiff() {
-        // SI 1 hole gets a stroke when diff >= 1
         let state = makeState(format: .fiveThreeOne, handicaps: [0, 4, 8, 12])
-        let p3 = state.players[3] // handicap 12, diff = 12
+        let p3 = state.players[3] // handicap 12, diff = 12 vs minHcp 0
         let p0 = state.players[0] // handicap 0, diff = 0
-        #expect(state.groupNetStrokes(for: p0, on: 1) == 0)
-        // SI 1 hole should give p3 a stroke (diff 12 >= SI 1)
-        #expect(state.groupNetStrokes(for: p3, on: 1) >= 1)
+        let si1Hole = state.roundStrokeIndex.min(by: { $0.value < $1.value })!.key
+        #expect(state.groupNetStrokes(for: p0, on: si1Hole) == 0)
+        #expect(state.groupNetStrokes(for: p3, on: si1Hole) >= 1)
     }
 }
 
@@ -128,6 +127,102 @@ struct BestBallTests {
         state.recordScore(4, forHole: si1Hole, player: state.players[2])
         state.recordScore(5, forHole: si1Hole, player: state.players[3])
         #expect(state.bestBallHoleResult(for: si1Hole) == .halved)
+    }
+}
+
+// MARK: - Alternate Shot
+
+@Suite("Alternate Shot")
+struct AlternateShotTests {
+
+    private func altState(handicaps: [Int] = [0,0,0,0]) -> AppState {
+        // Default teams: P0+P2 = Team A, P1+P3 = Team B (matches AppState.defaultTeamIndex)
+        makeState(format: .alternateShot, handicaps: handicaps)
+    }
+
+    @Test("Team A wins hole when its captain's net is lower")
+    func teamAWinsHole() {
+        let s = altState()
+        // Captains are P0 (Team A) and P1 (Team B)
+        s.recordScore(4, forHole: 1, player: s.players[0])
+        s.recordScore(5, forHole: 1, player: s.players[1])
+        #expect(s.alternateShotHoleResult(for: 1) == .teamWins(teamIndex: 0))
+    }
+
+    @Test("Team B wins hole")
+    func teamBWinsHole() {
+        let s = altState()
+        s.recordScore(5, forHole: 1, player: s.players[0])
+        s.recordScore(4, forHole: 1, player: s.players[1])
+        #expect(s.alternateShotHoleResult(for: 1) == .teamWins(teamIndex: 1))
+    }
+
+    @Test("halved when captain nets equal")
+    func halved() {
+        let s = altState()
+        s.recordScore(4, forHole: 1, player: s.players[0])
+        s.recordScore(4, forHole: 1, player: s.players[1])
+        #expect(s.alternateShotHoleResult(for: 1) == .halved)
+    }
+
+    @Test("nil result when one team hasn't scored")
+    func nilIfMissingScore() {
+        let s = altState()
+        s.recordScore(4, forHole: 1, player: s.players[0])
+        #expect(s.alternateShotHoleResult(for: 1) == nil)
+    }
+
+    @Test("scoring one teammate mirrors to the other")
+    func scoreMirrorsAcrossTeammates() {
+        let s = altState()
+        s.recordScore(5, forHole: 1, player: s.players[0])
+        // P2 is P0's teammate (Team A) and should now show 5
+        #expect(s.score(for: s.players[2], hole: 1) == 5)
+        // P1 (Team B) is unaffected
+        #expect(s.score(for: s.players[1], hole: 1) == nil)
+    }
+
+    @Test("team handicap is rounded average")
+    func teamHandicap() {
+        // Team A = P0(8) + P2(11) avg 9.5 → 10. Team B = P1(2) + P3(5) avg 3.5 → 4
+        let s = altState(handicaps: [8, 2, 11, 5])
+        #expect(s.teamHandicap(0) == 10)
+        #expect(s.teamHandicap(1) == 4)
+    }
+
+    @Test("higher-handicap team gets stroke on SI 1")
+    func strokeAllocation() {
+        // Team A combined handicap 6 vs Team B 0, diff 6 → A gets a stroke on SI 1–6
+        let s = altState(handicaps: [6, 0, 6, 0])
+        let si1Hole = s.roundStrokeIndex.min(by: { $0.value < $1.value })!.key
+        #expect(s.alternateShotTeamReceivesStroke(team: 0, on: si1Hole))
+        #expect(!s.alternateShotTeamReceivesStroke(team: 1, on: si1Hole))
+    }
+
+    @Test("net score gives weaker team the hole on SI 1")
+    func netScoreWinsHole() {
+        let s = altState(handicaps: [6, 0, 6, 0])
+        let si1Hole = s.roundStrokeIndex.min(by: { $0.value < $1.value })!.key
+        // Team A captain shoots 5, Team B captain shoots 4. Net: A 4, B 4 → halved
+        s.recordScore(5, forHole: si1Hole, player: s.players[0])
+        s.recordScore(4, forHole: si1Hole, player: s.players[1])
+        #expect(s.alternateShotHoleResult(for: si1Hole) == .halved)
+    }
+
+    @Test("status text shows All Square initially")
+    func allSquareText() {
+        #expect(altState().alternateShotStatusText == "All Square")
+    }
+
+    @Test("status text reflects 2 UP lead")
+    func twoUpText() {
+        let s = altState()
+        s.recordScore(3, forHole: 1, player: s.players[0])
+        s.recordScore(5, forHole: 1, player: s.players[1])
+        s.recordScore(3, forHole: 2, player: s.players[0])
+        s.recordScore(5, forHole: 2, player: s.players[1])
+        #expect(s.alternateShotStatusText.contains("Team A"))
+        #expect(s.alternateShotStatusText.contains("2 UP"))
     }
 }
 
@@ -339,9 +434,14 @@ struct FormatCompatTests {
 
     @Test("4-player formats require exactly 4")
     func fourPlayerFormats() {
-        for format in [GameFormat.bestBall, .wolf, .fiveThreeOne] {
+        for format in [GameFormat.bestBall, .wolf, .fiveThreeOne, .alternateShot] {
             #expect(!format.isCompatible(with: 3))
             #expect(format.isCompatible(with: 4))
         }
+    }
+
+    @Test("alternate shot is a team format")
+    func alternateShotIsTeamFormat() {
+        #expect(GameFormat.alternateShot.isTeamFormat)
     }
 }

@@ -138,6 +138,19 @@ struct SummaryView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .accessibilityIdentifier("summary.pointsTotals")
 
+        case .alternateShot:
+            VStack(spacing: 6) {
+                Text(appState.alternateShotStatusText)
+                    .font(.title2).fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+                Text("Alternate Shot (Foursomes)")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 24).padding(.vertical, 14)
+            .background(Color.green.opacity(0.12))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .accessibilityIdentifier("summary.matchResultLabel")
+
         case .strokePlay:
             EmptyView()
         }

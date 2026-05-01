@@ -59,8 +59,11 @@ struct RoundView: View {
             }
 
             // MARK: Player score table
-            playerTable
-                .padding(.horizontal)
+            if appState.gameFormat == .alternateShot {
+                alternateTeamTable.padding(.horizontal)
+            } else {
+                playerTable.padding(.horizontal)
+            }
 
             // MARK: Hole result overlay
             if let result = holeResult(for: displayHole) {
@@ -207,9 +210,10 @@ struct RoundView: View {
 
     private func holeResult(for hole: Int) -> HoleResult? {
         switch appState.gameFormat {
-        case .matchPlay:  return appState.matchHoleResult(for: hole)
-        case .bestBall:   return appState.bestBallHoleResult(for: hole)
-        default:          return nil
+        case .matchPlay:     return appState.matchHoleResult(for: hole)
+        case .bestBall:      return appState.bestBallHoleResult(for: hole)
+        case .alternateShot: return appState.alternateShotHoleResult(for: hole)
+        default:             return nil
         }
     }
 
@@ -228,6 +232,39 @@ struct RoundView: View {
             Text("Hole halved")
                 .font(.subheadline).foregroundStyle(.secondary)
                 .padding(.horizontal)
+        }
+    }
+
+    // MARK: - Alternate Shot team table
+
+    private var alternateTeamTable: some View {
+        VStack(spacing: 0) {
+            ForEach([0, 1], id: \.self) { team in
+                altTeamRow(team: team)
+                if team == 0 { Divider().padding(.leading) }
+            }
+        }
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(.systemGray4), lineWidth: 0.5))
+    }
+
+    private func altTeamRow(team: Int) -> some View {
+        let members = appState.teamPlayers(team: team)
+        let captain = members.first
+        let existingScore = captain.flatMap { appState.score(for: $0, hole: displayHole) }
+        let getsStroke = appState.alternateShotTeamReceivesStroke(team: team, on: displayHole)
+        let names = members.map(\.name).joined(separator: " & ")
+
+        return TeamScoreRow(
+            teamName: appState.teamName(team),
+            memberNames: names,
+            getsStroke: getsStroke,
+            hole: displayHole,
+            existingScore: existingScore
+        ) { strokes in
+            guard let captain else { return }
+            appState.recordScore(strokes, forHole: displayHole, player: captain)
         }
     }
 

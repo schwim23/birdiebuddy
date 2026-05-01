@@ -6,20 +6,21 @@ enum GameFormat: String, CaseIterable, Codable {
     case bestBall      = "Best Ball"
     case wolf          = "Wolf"
     case fiveThreeOne  = "5-3-1"
+    case alternateShot = "Alternate Shot"
 
     /// Valid player-count range for this format.
     var playerRange: ClosedRange<Int> {
         switch self {
-        case .strokePlay:             return 1...4
-        case .matchPlay:              return 2...2
-        case .bestBall, .wolf, .fiveThreeOne: return 4...4
+        case .strokePlay:                                return 1...4
+        case .matchPlay:                                 return 2...2
+        case .bestBall, .wolf, .fiveThreeOne, .alternateShot: return 4...4
         }
     }
 
     func isCompatible(with count: Int) -> Bool { playerRange.contains(count) }
 
     /// True when the format uses two teams.
-    var isTeamFormat: Bool { self == .bestBall }
+    var isTeamFormat: Bool { self == .bestBall || self == .alternateShot }
 }
 
 enum HoleResult: Equatable {
