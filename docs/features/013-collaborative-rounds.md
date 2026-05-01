@@ -1,14 +1,16 @@
 # Feature 013 — Collaborative Rounds
 
-**Status:** Future (requires D08 — Auth; extends Feature 008 — Live Scoreboards)
+**Status:** Future (requires D08 — Auth; D10 — CloudKit setup)
 
 ---
 
 ## Overview
 
-Multiple authenticated users join the same round session. Every participant sees all scores, the live scoreboard, and any recorded shot clips in real time — on their own device, in-app or on the web. Each player enters their own scores; no single device owns the round. Rounds are joinable via a unique short code or invite link.
+Multiple users join the same round session. Every participant sees all scores and the live scoreboard in real time — on their own device. Each player enters their own scores; no single device owns the round. Rounds are joinable via a unique short code.
 
-This extends Feature 008 (Match Room / Live Scoreboards) with authenticated multi-device participation and video sync.
+Built on **CloudKit** (iCloud). No custom backend required.
+
+> **Future migration note:** CloudKit has no viable public web API. If a web scoreboard (`birdiebuddy.app/live/{CODE}`) becomes a hard requirement, this feature will need to be rewritten against a Supabase (or similar) backend. The data model below is designed to map cleanly to Postgres to minimise that rewrite cost.
 
 ---
 
@@ -17,7 +19,7 @@ This extends Feature 008 (Match Room / Live Scoreboards) with authenticated mult
 ### Round Session
 A single 18-hole round at one course on one day. Has:
 - One or more **groups** (foursomes, threesomes, twosomes) playing simultaneously
-- A **join code** (6-char) and invite link
+- A **join code** (6-char, derived from the CloudKit record ID)
 - A **format** (stroke play, match play, Best Ball, Wolf, 5-3-1 — from 009)
 - Optional parent **Event** (Feature 014)
 
@@ -34,54 +36,103 @@ A set of 2–4 players within a round session playing together. Scores are enter
 
 ---
 
+## CloudKit Architecture
+
+Uses the **public database** so participants can join without sharing an iCloud container explicitly. Record types live in the app's default CloudKit container (`iCloud.com.yourteam.birdiebuddy`).
+
+### Record Types
+
+```
+RoundSession
+  - code: String              // 6-char join code (first 6 chars of record ID)
+  - creatorUserID: String     // CKRecord.creatorUserRecordID reference
+  - courseName: String
+  - courseID: String?
+  - format: String            // GameFormat raw value
+  - scheduledTeeTime: Date?
+  - status: String            // "lobby" | "active" | "completed"
+  - createdAt: Date
+
+RoundGroup
+  - roundSessionRef: CKRecord.Reference  // → RoundSession
+  - groupIndex: Int
+
+SessionPlayer
+  - roundGroupRef: CKRecord.Reference    // → RoundGroup
+  - name: String
+  - handicap: Int
+  - userRecordID: String?    // nil = guest player
+  - role: String             // "creator" | "player" | "spectator"
+
+ScoreEntry
+  - roundGroupRef: CKRecord.Reference
+  - playerName: String
+  - hole: Int
+  - strokes: Int
+  - recordedAt: Date
+```
+
+### Realtime Sync
+
+Use `CKQuerySubscription` on `ScoreEntry` and `SessionPlayer` record types filtered by `roundSessionRef`. CloudKit pushes a silent push notification on change; the app re-fetches affected records.
+
+- APNs silent push → app wakes → fetch changed records → update local state → UI refreshes
+- No polling. Works in background (iOS delivers silent pushes to suspended apps).
+- Requires `Push Notifications` and `Background Modes > Remote notifications` capabilities.
+
+---
+
+## Auth Changes (vs. D08)
+
+D08 as written uses Sign in with Apple with a custom Keychain store. With CloudKit:
+
+- **No custom auth needed for CloudKit access** — CloudKit authenticates via the user's iCloud account automatically
+- Sign in with Apple (D08) is still used for **identity** (display name, stable user ID for `SessionPlayer.userRecordID`)
+- `AuthService` is simplified: Sign in with Apple → store name + userID in Keychain → pass userID to CloudKit records. No token verification needed on a backend.
+
+---
+
 ## User Flows
 
 ### Creating a Round Session
 
-1. Home screen → "Start Live Round"
+1. Home screen → "Start Live Round" (requires iCloud account)
 2. Set: course, format, tee time, number of groups
 3. Assign players to groups (by name + handicap, or invite by code later)
-4. Tap "Create" → round session created on backend → join code + link generated
-5. Share code/link via iOS share sheet
+4. Tap "Create" → `RoundSession` record saved to CloudKit public DB → join code generated
+5. Share code via iOS share sheet
 
 ### Joining a Round Session
 
-**In-app:**
 1. Home screen → "Join Round" → enter 6-char code
-2. App fetches round details → shows format, course, group assignments
+2. App queries CloudKit for `RoundSession` with matching code → shows format, course, groups
 3. User selects their player slot (or is pre-assigned)
-4. Taps "Join" → linked to session; round starts when creator starts it
-
-**Via link:**
-- `birdiebuddy.app/join/X4K9PQ` → deep link → same join flow in-app
-- If app not installed: web page shows round details + App Store link
+4. Taps "Join" → `SessionPlayer` record created in CloudKit → subscriptions activated
 
 ### Entering Scores (in-round)
 
 - Each player's device shows their own group's scoring UI (same as current `RoundView`)
-- Scores sync to backend on entry; all other participants' devices update in real time
-- Players can also see other groups' current hole and running scores via a "All Groups" tab
-- Voice entry (004, 010) works as today — scores push to the shared session
+- On score entry: `ScoreEntry` record saved to CloudKit → subscription fires on all other devices → UI updates
+- Players can see other groups' current hole and running scores via an "All Groups" tab
+- Voice entry (004, 010) works as today — scores push to CloudKit after local save
 
 ### Shot Video Sync (012 integration)
 
-- When a player saves a clip, it uploads to the backend (thumbnail immediately; full video on Wi-Fi or when round ends)
-- All participants see new clip thumbnails appear in the round's clip feed
-- Tapping a thumbnail streams the video (full download optional)
-- Clips tagged with uploader's name, group, hole, shot type
+- Clip metadata (thumbnail, tags) saved as a `ShotClip` CloudKit record attached to the session
+- Full video stored in CloudKit Assets (attached to the `ShotClip` record)
+- All participants see new clip thumbnails appear via subscription
+- Tapping a thumbnail downloads the full video asset on demand
 
 ---
 
-## Data Model
+## Data Model (local mirror)
 
 ```swift
-// Server-side concepts mirrored locally
-
 struct RoundSession: Codable, Identifiable {
     let id: UUID
-    let code: String                  // 6-char join code
-    let eventID: UUID?                // nil if standalone round
-    let creatorUserID: String         // Sign in with Apple user ID
+    let code: String
+    let eventID: UUID?
+    let creatorUserID: String
     let courseName: String
     let courseID: UUID?
     let format: GameFormat
@@ -92,16 +143,16 @@ struct RoundSession: Codable, Identifiable {
 }
 
 enum RoundStatus: String, Codable {
-    case lobby       // created, players joining
-    case active      // first score entered
-    case completed   // all groups finished
+    case lobby
+    case active
+    case completed
 }
 
 struct RoundGroup: Codable, Identifiable {
     let id: UUID
     let roundSessionID: UUID
     var players: [SessionPlayer]
-    var scores: [String: [Int: Int]]  // playerName → hole → strokes
+    var scores: [String: [Int: Int]]   // playerName → hole → strokes
     var currentHole: Int
 }
 
@@ -109,7 +160,7 @@ struct SessionPlayer: Codable, Identifiable {
     let id: UUID
     let name: String
     let handicap: Int
-    let userID: String?               // nil = guest player (named but no account)
+    let userID: String?
     var role: ParticipantRole
 }
 
@@ -120,68 +171,56 @@ enum ParticipantRole: String, Codable {
 }
 ```
 
-**Local SwiftData additions:**
-- `joinedSessions: [RoundSessionRef]` — lightweight list of sessions the user has joined, for home screen "recent live rounds"
+This struct layout maps directly to Postgres columns to minimise a future Supabase migration.
 
 ---
 
-## Backend API
+## CloudKit Service
 
-Extends 008's API:
+New `CloudKitService.swift`:
 
-| Endpoint | Description |
-|---|---|
-| `POST /sessions` | Create a round session |
-| `GET /sessions/{code}` | Fetch session state (all groups, all scores) |
-| `POST /sessions/{code}/join` | Join as a player or spectator |
-| `PATCH /sessions/{code}/groups/{groupID}/scores` | Push score update |
-| `GET /sessions/{code}/clips` | List clip metadata (thumbnails) |
-| `POST /sessions/{code}/clips` | Upload clip metadata + thumbnail |
-| `GET /sessions/{code}/clips/{clipID}` | Stream full video |
-| `WS /sessions/{code}/live` | WebSocket for real-time score + clip push (Phase 2) |
+```swift
+final class CloudKitService {
+    static let shared = CloudKitService()
+    private let container = CKContainer.default()
+    private let publicDB: CKDatabase
 
-Phase 1 uses polling (GET every 5s). Phase 2 replaces with WebSocket push.
+    func createSession(_ session: RoundSession) async throws -> String  // returns join code
+    func fetchSession(code: String) async throws -> RoundSession
+    func joinSession(code: String, player: SessionPlayer) async throws
+    func saveScore(_ entry: ScoreEntry, sessionCode: String) async throws
+    func subscribeToSession(code: String) async throws                  // sets up CKQuerySubscription
+    func unsubscribeFromSession(code: String) async throws
+}
+```
 
 ---
 
 ## UI Changes
 
 ### HomeView
-- "Start Live Round" button (authenticated users)
+- "Start Live Round" button (requires iCloud sign-in — show prompt if iCloud unavailable)
 - "Join Round" button — prompts for code
-- Recent live rounds section (last 5 sessions)
+- Recent live rounds section (last 5 sessions, from local SwiftData `RoundSessionRef`)
 
 ### New screens
 
 | Screen | Route | Description |
 |---|---|---|
 | `RoundLobbyView` | `.roundLobby` | Create session: course, format, groups, tee time |
-| `JoinRoundView` | `.joinRound` | Enter code or scan QR, select player slot |
+| `JoinRoundView` | `.joinRound` | Enter code, select player slot |
 | `LiveRoundView` | `.liveRound(code:)` | Tabbed: My Group (scoring) + All Groups (spectate) + Clips |
 | `AllGroupsView` | (tab within LiveRoundView) | Read-only scoreboard for all groups, live updating |
 | `ClipFeedView` | (tab within LiveRoundView) | Chronological clip thumbnails from all players |
-
-### RoundView integration
-- When `AppState.currentSessionCode != nil`, score entries push to backend after local save
-- "All Groups" floating button opens `AllGroupsView` as a sheet during the round
-
----
-
-## Web Scoreboard (`birdiebuddy.app/live/{CODE}`)
-
-Extends the 008 web scoreboard:
-- Shows all groups, all players, all scores
-- Groups displayed as collapsible sections
-- Clip thumbnails listed per hole (click to play in browser)
-- "Open in App" banner for iOS users
 
 ---
 
 ## Offline Behaviour
 
-- Scores recorded locally if network drops; queued and synced when connectivity returns
-- Videos recorded locally always; uploaded when back online
+- Scores recorded locally in `AppState` if CloudKit is unreachable
+- Queued saves retried via `CKModifyRecordsOperation` with automatic retry on connectivity restore
 - Round can proceed fully offline; sync is best-effort
+- CloudKit handles conflict resolution (last-write-wins per `ScoreEntry` record)
 
 ---
 
@@ -193,7 +232,7 @@ Extends the 008 web scoreboard:
 - `liveRound.myGroupTab`
 - `liveRound.allGroupsTab`
 - `liveRound.clipsTab`
-- `liveRound.joinCode` — displays the session code for sharing
+- `liveRound.joinCode`
 
 ---
 
@@ -201,28 +240,40 @@ Extends the 008 web scoreboard:
 
 | Prereq | Feature |
 |---|---|
-| D08 — Auth | User identity for session ownership and joining |
-| D10 — Hosting & Permissions | Backend API, video storage, WebSocket infrastructure |
-| 008 — Live Scoreboards | Base match room concept and web scoreboard |
-| 012 — Shot Video | Video recording and local storage |
+| D08 — Auth | User identity (display name, stable user ID) |
+| D10 — CloudKit Setup | Container config, record types, subscriptions, capabilities |
+| 012 — Shot Video | Video recording and local storage (for clip sync) |
 
 ---
 
 ## Phased Delivery
 
 **Phase 1:**
-- Create/join session, group assignment, invite code + link
-- Score sync via polling (5s)
-- All Groups read-only scoreboard (in-app + web)
-- Clip thumbnail sync; full video on-demand
+- Create/join session, group assignment, invite code
+- Score sync via CloudKit subscriptions
+- All Groups read-only scoreboard (in-app)
 
 **Phase 2:**
-- WebSocket real-time push
 - Push notifications ("Eagle on 7!")
-- QR code for join link
-- Guest players (named but no account required)
+- QR code for join code
+- Guest players (named but no iCloud account)
+- Clip thumbnail sync via CloudKit Assets
 
 **Phase 3:**
-- In-round chat/reactions per hole
-- Highlight reel auto-generated from session clips
+- In-round reactions per hole
 - Integration with Feature 014 (Events)
+- *(If web scoreboard required: migrate to Supabase backend)*
+
+---
+
+## Future Migration Path (CloudKit → Supabase)
+
+If a web scoreboard becomes a hard requirement:
+
+1. Spin up Supabase project; create tables matching the struct layout above (1:1 column mapping)
+2. Replace `CloudKitService` with `SupabaseService` (same interface)
+3. Migrate D08 auth: pass Apple identity token to Supabase Auth instead of Keychain only
+4. Replace `CKQuerySubscription` with Supabase Realtime channel subscriptions
+5. Add Next.js web scoreboard reading from Supabase
+
+The local struct types (`RoundSession`, `RoundGroup`, etc.) do not change — only the persistence/sync layer swaps out.
