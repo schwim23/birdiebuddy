@@ -16,6 +16,7 @@
 		19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7BB08CF3B060254E0A4BE8 /* Player.swift */; };
 		1A2884BAD04435E2122939E5 /* CourseDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDB8A7ECD0F51FBA27945BF /* CourseDatabase.swift */; };
 		1CC8F82E2A4822A35C818223 /* PlayerParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */; };
+		248B3AB9F255063CDAAD739D /* GameFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B073FBF248C2DE4424C08E55 /* GameFormatTests.swift */; };
 		29C1D09117B1DDC195CD5239 /* CourseSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */; };
 		342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E685FFC2CF7EB0C9A3E9536 /* Course.swift */; };
 		3EACD22E2A8A884E7B7D86B9 /* PlayerProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641E694C891613E89075E44A /* PlayerProfile.swift */; };
@@ -29,6 +30,7 @@
 		8ADA50C3D9A4195184F6CEE5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975093227D8F112FB51AD0D /* AppRouter.swift */; };
 		996D1E22CF34DBDDACF2DA3E /* CourseRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C416E51C0BBB40E66C9B83 /* CourseRecord.swift */; };
 		A1F738B289803CC6072F24E8 /* MultiPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B02970669A122699C9487E /* MultiPlayerTests.swift */; };
+		A3D6D4FC9334A65EC0A30BFF /* TeamScoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3876787156F70A14088DA0C /* TeamScoreRow.swift */; };
 		A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A56CF5EC455BFB0B9F3061B /* BirdieBuddyApp.swift */; };
 		A86D540EDC3252EABCACB787 /* CourseSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911B1C521BBC285C998C5E35 /* CourseSetupView.swift */; };
 		AA82BBCE918EF6BD64B36202 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48F00EC6675253BFB8B56E7F /* Assets.xcassets */; };
@@ -100,6 +102,7 @@
 		A54BCA225C51C2C942C06DC9 /* RoundRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundRecord.swift; sourceTree = "<group>"; };
 		A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerParserTests.swift; sourceTree = "<group>"; };
 		AF41C16E656D83B3FEE3FDCE /* CourseSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSetup.swift; sourceTree = "<group>"; };
+		B073FBF248C2DE4424C08E55 /* GameFormatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameFormatTests.swift; sourceTree = "<group>"; };
 		B28A9A921A24F9D3DB63C4EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B4CC0B35DBD9199CC41E411A /* CourseDatabaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDatabaseTests.swift; sourceTree = "<group>"; };
 		C1C416E51C0BBB40E66C9B83 /* CourseRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseRecord.swift; sourceTree = "<group>"; };
@@ -111,6 +114,7 @@
 		DC88B406A4C96604DAE982B1 /* PlayerParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerParser.swift; sourceTree = "<group>"; };
 		DED07D1C3A1137DF9D44116F /* BirdieBuddy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BirdieBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC3E6ADA71AE023BCD5D9949 /* FavoriteCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCourse.swift; sourceTree = "<group>"; };
+		F3876787156F70A14088DA0C /* TeamScoreRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamScoreRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -180,6 +184,7 @@
 				1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */,
 				3EF2430DDAD3D45F13F4FB25 /* StatsView.swift */,
 				184827BB522982A2AC458814 /* SummaryView.swift */,
+				F3876787156F70A14088DA0C /* TeamScoreRow.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -188,6 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				B4CC0B35DBD9199CC41E411A /* CourseDatabaseTests.swift */,
+				B073FBF248C2DE4424C08E55 /* GameFormatTests.swift */,
 				B28A9A921A24F9D3DB63C4EF /* Info.plist */,
 				CE168AA29F0AFF68EE2081BB /* MultiScoreParserTests.swift */,
 				A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */,
@@ -375,6 +381,7 @@
 				5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */,
 				ADBD25DCB3B3CA2A1EE3FA53 /* StatsView.swift in Sources */,
 				11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */,
+				A3D6D4FC9334A65EC0A30BFF /* TeamScoreRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +390,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				76D3A5E5616885242CAEEABF /* CourseDatabaseTests.swift in Sources */,
+				248B3AB9F255063CDAAD739D /* GameFormatTests.swift in Sources */,
 				B0DE00022005D64607530CBB /* MultiScoreParserTests.swift in Sources */,
 				1CC8F82E2A4822A35C818223 /* PlayerParserTests.swift in Sources */,
 				84BC85AC7F79C7CFE72DA44B /* ScoreParserTests.swift in Sources */,

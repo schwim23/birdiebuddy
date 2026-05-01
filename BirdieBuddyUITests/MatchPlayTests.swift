@@ -29,17 +29,29 @@ final class MatchPlayTests: XCTestCase {
 
     // MARK: - Tests
 
+    /// Picker uses .menu style — the trigger renders as a button. Tapping it
+    /// opens a menu with the format options as buttons in `app.collectionViews`.
+    private func selectFormat(_ name: String) {
+        let picker = app.buttons["setup.formatPicker"]
+        XCTAssertTrue(picker.waitForExistence(timeout: 2))
+        picker.tap()
+        // Menu items can appear under collectionViews, sheets, or buttons depending on iOS version
+        let item = app.buttons[name].firstMatch
+        XCTAssertTrue(item.waitForExistence(timeout: 2))
+        item.tap()
+    }
+
     func testFormatPickerHiddenWithOnePlayer() {
         goToSetup()
         addPlayer(name: "Alice")
-        XCTAssertFalse(app.otherElements["setup.formatPicker"].exists)
+        XCTAssertFalse(app.buttons["setup.formatPicker"].exists)
     }
 
     func testFormatPickerVisibleWithTwoPlayers() {
         goToSetup()
         addPlayer(name: "Alice")
         addPlayer(name: "Bob")
-        XCTAssertTrue(app.segmentedControls["setup.formatPicker"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["setup.formatPicker"].waitForExistence(timeout: 2))
     }
 
     func testMatchStatusLabelExistsDuringMatchPlayRound() {
@@ -47,9 +59,7 @@ final class MatchPlayTests: XCTestCase {
         addPlayer(name: "Alice")
         addPlayer(name: "Bob")
 
-        let picker = app.segmentedControls["setup.formatPicker"]
-        XCTAssertTrue(picker.waitForExistence(timeout: 2))
-        picker.buttons["Match Play"].tap()
+        selectFormat("Match Play")
 
         app.buttons["setup.startRoundButton"].tap()
         XCTAssertTrue(app.staticTexts["round.matchStatusLabel"].waitForExistence(timeout: 3))
@@ -60,9 +70,7 @@ final class MatchPlayTests: XCTestCase {
         addPlayer(name: "Alice")
         addPlayer(name: "Bob")
 
-        let picker = app.segmentedControls["setup.formatPicker"]
-        XCTAssertTrue(picker.waitForExistence(timeout: 2))
-        picker.buttons["Match Play"].tap()
+        selectFormat("Match Play")
 
         app.buttons["setup.startRoundButton"].tap()
         let statusLabel = app.staticTexts["round.matchStatusLabel"]
@@ -75,9 +83,7 @@ final class MatchPlayTests: XCTestCase {
         addPlayer(name: "Alice")
         addPlayer(name: "Bob")
 
-        let picker = app.segmentedControls["setup.formatPicker"]
-        XCTAssertTrue(picker.waitForExistence(timeout: 2))
-        picker.buttons["Match Play"].tap()
+        selectFormat("Match Play")
         app.buttons["setup.startRoundButton"].tap()
 
         XCTAssertTrue(app.staticTexts["round.holeLabel"].waitForExistence(timeout: 3))

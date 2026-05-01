@@ -14,6 +14,12 @@ final class AppState {
     var roundPar: [Int: Int] = Course.defaultPar
     var roundStrokeIndex: [Int: Int] = Course.defaultStrokeIndex
 
+    /// Best Ball / Alternate Shot: playerID → team index (0 or 1).
+    var teamAssignments: [UUID: Int] = [:]
+
+    /// Wolf: hole number → wolf state for that hole.
+    var wolfHoleStates: [Int: WolfHoleState] = [:]
+
     var isRoundFinished: Bool { currentHole > 18 }
 
     // MARK: - Course helpers
@@ -23,7 +29,8 @@ final class AppState {
 
     // MARK: - Setup
 
-    func startRound(with players: [Player], format: GameFormat = .strokePlay, course: CourseSetup? = nil) {
+    func startRound(with players: [Player], format: GameFormat = .strokePlay,
+                    course: CourseSetup? = nil, teams: [UUID: Int] = [:]) {
         self.players = players
         self.gameFormat = format
         currentHole = 1
@@ -31,9 +38,12 @@ final class AppState {
         scores = [:]
         roundPar = course?.parDict ?? Course.defaultPar
         roundStrokeIndex = course?.strokeIndexDict ?? Course.defaultStrokeIndex
+        teamAssignments = teams.isEmpty ? defaultTeams(for: players) : teams
+        wolfHoleStates = [:]
     }
 
-    func startRound(with players: [Player], format: GameFormat = .strokePlay, courseRecord: CourseRecord, tee: String) {
+    func startRound(with players: [Player], format: GameFormat = .strokePlay,
+                    courseRecord: CourseRecord, tee: String, teams: [UUID: Int] = [:]) {
         self.players = players
         self.gameFormat = format
         currentHole = 1
@@ -41,6 +51,14 @@ final class AppState {
         scores = [:]
         roundPar = courseRecord.parDict
         roundStrokeIndex = courseRecord.strokeIndexDict
+        teamAssignments = teams.isEmpty ? defaultTeams(for: players) : teams
+        wolfHoleStates = [:]
+    }
+
+    private func defaultTeams(for players: [Player]) -> [UUID: Int] {
+        guard players.count == 4 else { return [:] }
+        // Default pairing: 0+2 = Team A, 1+3 = Team B
+        return [players[0].id: 0, players[1].id: 1, players[2].id: 0, players[3].id: 1]
     }
 
     // MARK: - Scoring
@@ -57,29 +75,72 @@ final class AppState {
         guard (1...18).contains(hole) else { return }
         scores[player.id, default: [:]][hole] = strokes
 
+        // Alternate Shot: mirror the score to all teammates so that hole-complete
+        // logic (allSatisfy) and totalScore work uniformly.
+        if gameFormat == .alternateShot {
+            let team = teamAssignments[player.id] ?? 0
+            for teammate in teamPlayers(team: team) where teammate.id != player.id {
+                scores[teammate.id, default: [:]][hole] = strokes
+            }
+        }
+
         // Advance the leading hole once every player has scored this hole.
         if hole >= currentHole && players.allSatisfy({ scores[$0.id]?[hole] != nil }) {
             currentHole = hole + 1
         }
 
-        // Match play: end round early if match is decided.
+        // End round early when match is decided.
         if gameFormat == .matchPlay, matchIsDecided, !isRoundFinished {
             currentHole = 19
+        }
+        if gameFormat == .bestBall, bestBallIsDecided, !isRoundFinished {
+            currentHole = 19
+        }
+        if gameFormat == .alternateShot, alternateShotIsDecided, !isRoundFinished {
+            currentHole = 19
+        }
+    }
+
+    // MARK: - True whether a player receives a handicap stroke on a hole
+
+    func receivesStroke(_ player: Player, on hole: Int) -> Bool {
+        switch gameFormat {
+        case .matchPlay:
+            guard players.count == 2,
+                  let opp = players.first(where: { $0.id != player.id }) else { return false }
+            return matchPlayStrokes(for: player, against: opp, on: hole) > 0
+        case .bestBall, .wolf, .fiveThreeOne:
+            return groupNetStrokes(for: player, on: hole) > 0
+        case .alternateShot:
+            return false  // strokes shown at team level
+        case .strokePlay:
+            guard player.handicap > 0, let si = roundStrokeIndex[hole] else { return false }
+            return si <= player.handicap
+        }
+    }
+
+    // MARK: - General status text (format-aware)
+
+    var statusText: String {
+        switch gameFormat {
+        case .strokePlay:    return ""
+        case .matchPlay:     return matchStatusText
+        case .bestBall:      return bestBallStatusText
+        case .alternateShot: return alternateShotStatusText
+        case .wolf:          return wolfStandingsText
+        case .fiveThreeOne:  return fiveThreeOneStandingsText
         }
     }
 
     // MARK: - Match Play
 
-    /// Net score for a player on a hole (gross minus match play strokes received).
     func matchNetScore(for player: Player, hole: Int) -> Int? {
         guard players.count == 2,
               let gross = score(for: player, hole: hole),
-              let opponent = players.first(where: { $0.id != player.id }) else { return nil }
-        let strokes = matchPlayStrokes(for: player, against: opponent, on: hole)
-        return gross - strokes
+              let opp = players.first(where: { $0.id != player.id }) else { return nil }
+        return gross - matchPlayStrokes(for: player, against: opp, on: hole)
     }
 
-    /// Who won a specific hole in match play, or nil if not yet fully scored.
     func matchHoleResult(for hole: Int) -> HoleResult? {
         guard players.count == 2 else { return nil }
         let p1 = players[0], p2 = players[1]
@@ -90,7 +151,6 @@ final class AppState {
         return .halved
     }
 
-    /// Running match status: positive = players[0] leads, negative = players[1] leads.
     var matchHolesUp: Int {
         guard players.count == 2 else { return 0 }
         return (1...18).reduce(0) { acc, hole in
@@ -102,17 +162,13 @@ final class AppState {
         }
     }
 
-    /// Number of holes where both players have recorded a score.
     var matchHolesPlayed: Int {
         guard players.count == 2 else { return 0 }
         return (1...18).filter { hole in players.allSatisfy { score(for: $0, hole: hole) != nil } }.count
     }
 
-    var matchIsDecided: Bool {
-        abs(matchHolesUp) > (18 - matchHolesPlayed)
-    }
+    var matchIsDecided: Bool { abs(matchHolesUp) > (18 - matchHolesPlayed) }
 
-    /// Human-readable running match status (e.g. "Mike 2 UP", "All Square", "Dormie 1").
     var matchStatusText: String {
         guard players.count == 2, gameFormat == .matchPlay else { return "" }
         let up = matchHolesUp
@@ -125,25 +181,264 @@ final class AppState {
         return "\(leader.name) \(lead) UP"
     }
 
-    /// True when the player receives a stroke on this hole for the current format.
-    func receivesStroke(_ player: Player, on hole: Int) -> Bool {
-        if gameFormat == .matchPlay, players.count == 2,
-           let opponent = players.first(where: { $0.id != player.id }) {
-            return matchPlayStrokes(for: player, against: opponent, on: hole) > 0
-        }
-        // Stroke play: use round's stroke index
-        guard player.handicap > 0, let si = roundStrokeIndex[hole] else { return false }
-        return si <= player.handicap
+    private func matchPlayStrokes(for player: Player, against opp: Player, on hole: Int) -> Int {
+        let diff = player.handicap - opp.handicap
+        guard diff > 0, let si = roundStrokeIndex[hole] else { return 0 }
+        var s = 0
+        if si <= diff      { s += 1 }
+        if si <= diff - 18 { s += 1 }
+        return s
     }
 
-    // MARK: - Private match play stroke calculation (uses roundStrokeIndex)
+    // MARK: - Group Net (Best Ball / Wolf / 5-3-1)
+    //   Each player's net = gross − strokes allocated relative to the lowest-handicap player.
 
-    private func matchPlayStrokes(for player: Player, against opponent: Player, on hole: Int) -> Int {
-        let diff = player.handicap - opponent.handicap
+    func groupNetScore(for player: Player, hole: Int) -> Int? {
+        guard let gross = score(for: player, hole: hole) else { return nil }
+        return gross - groupNetStrokes(for: player, on: hole)
+    }
+
+    func groupNetStrokes(for player: Player, on hole: Int) -> Int {
+        let minHcp = players.map(\.handicap).min() ?? 0
+        let diff = player.handicap - minHcp
         guard diff > 0, let si = roundStrokeIndex[hole] else { return 0 }
-        var strokes = 0
-        if si <= diff      { strokes += 1 }
-        if si <= diff - 18 { strokes += 1 }
-        return strokes
+        var s = 0
+        if si <= diff      { s += 1 }
+        if si <= diff - 18 { s += 1 }
+        return s
+    }
+
+    // MARK: - Best Ball
+
+    func teamPlayers(team: Int) -> [Player] {
+        players.filter { teamAssignments[$0.id] == team }
+    }
+
+    func teamIndex(for player: Player) -> Int { teamAssignments[player.id] ?? 0 }
+    func teamName(_ index: Int) -> String { index == 0 ? "Team A" : "Team B" }
+
+    func bestBallHoleResult(for hole: Int) -> HoleResult? {
+        guard gameFormat == .bestBall else { return nil }
+        let t0 = teamPlayers(team: 0), t1 = teamPlayers(team: 1)
+        guard !t0.isEmpty, !t1.isEmpty else { return nil }
+        let nets0 = t0.compactMap { groupNetScore(for: $0, hole: hole) }
+        let nets1 = t1.compactMap { groupNetScore(for: $0, hole: hole) }
+        // Only report result once all players on both teams have scored
+        guard nets0.count == t0.count, nets1.count == t1.count else { return nil }
+        guard let b0 = nets0.min(), let b1 = nets1.min() else { return nil }
+        if b0 < b1 { return .teamWins(teamIndex: 0) }
+        if b1 < b0 { return .teamWins(teamIndex: 1) }
+        return .halved
+    }
+
+    var bestBallHolesUp: Int {
+        (1...18).reduce(0) { acc, hole in
+            switch bestBallHoleResult(for: hole) {
+            case .teamWins(let t) where t == 0: return acc + 1
+            case .teamWins:                      return acc - 1
+            default:                             return acc
+            }
+        }
+    }
+
+    var bestBallHolesPlayed: Int {
+        (1...18).filter { hole in
+            teamPlayers(team: 0).allSatisfy { score(for: $0, hole: hole) != nil } &&
+            teamPlayers(team: 1).allSatisfy { score(for: $0, hole: hole) != nil }
+        }.count
+    }
+
+    var bestBallIsDecided: Bool { abs(bestBallHolesUp) > (18 - bestBallHolesPlayed) }
+
+    var bestBallStatusText: String {
+        guard gameFormat == .bestBall else { return "" }
+        let up = bestBallHolesUp
+        let remaining = 18 - bestBallHolesPlayed
+        if up == 0 { return "All Square" }
+        let leadTeam = up > 0 ? 0 : 1
+        let lead = abs(up)
+        if lead > remaining { return "Team \(teamName(leadTeam)) wins \(lead)&\(remaining)" }
+        if lead == remaining { return "Dormie \(lead)" }
+        return "Team \(teamName(leadTeam)) \(lead) UP"
+    }
+
+    // MARK: - Alternate Shot (Foursomes)
+    //   One score per team per hole. Team handicap = average of partners', rounded.
+
+    func teamHandicap(_ team: Int) -> Int {
+        let members = teamPlayers(team: team)
+        guard !members.isEmpty else { return 0 }
+        let total = members.map(\.handicap).reduce(0, +)
+        return Int(Double(total) / Double(members.count) + 0.5)  // round half-up
+    }
+
+    func alternateShotTeamReceivesStroke(team: Int, on hole: Int) -> Bool {
+        alternateShotStrokes(for: team, on: hole) > 0
+    }
+
+    func alternateShotHoleResult(for hole: Int) -> HoleResult? {
+        guard gameFormat == .alternateShot else { return nil }
+        guard let n0 = alternateShotNetScore(team: 0, hole: hole),
+              let n1 = alternateShotNetScore(team: 1, hole: hole) else { return nil }
+        if n0 < n1 { return .teamWins(teamIndex: 0) }
+        if n1 < n0 { return .teamWins(teamIndex: 1) }
+        return .halved
+    }
+
+    var alternateShotHolesUp: Int {
+        (1...18).reduce(0) { acc, hole in
+            switch alternateShotHoleResult(for: hole) {
+            case .teamWins(let t) where t == 0: return acc + 1
+            case .teamWins:                      return acc - 1
+            default:                             return acc
+            }
+        }
+    }
+
+    var alternateShotHolesPlayed: Int {
+        (1...18).filter { hole in
+            teamPlayers(team: 0).first.flatMap { score(for: $0, hole: hole) } != nil &&
+            teamPlayers(team: 1).first.flatMap { score(for: $0, hole: hole) } != nil
+        }.count
+    }
+
+    var alternateShotIsDecided: Bool { abs(alternateShotHolesUp) > (18 - alternateShotHolesPlayed) }
+
+    var alternateShotStatusText: String {
+        guard gameFormat == .alternateShot else { return "" }
+        let up = alternateShotHolesUp
+        let remaining = 18 - alternateShotHolesPlayed
+        if up == 0 { return "All Square" }
+        let leadTeam = up > 0 ? 0 : 1
+        let lead = abs(up)
+        if lead > remaining { return "Team \(teamName(leadTeam)) wins \(lead)&\(remaining)" }
+        if lead == remaining { return "Dormie \(lead)" }
+        return "Team \(teamName(leadTeam)) \(lead) UP"
+    }
+
+    private func alternateShotNetScore(team: Int, hole: Int) -> Int? {
+        guard let captain = teamPlayers(team: team).first,
+              let gross = score(for: captain, hole: hole) else { return nil }
+        return gross - alternateShotStrokes(for: team, on: hole)
+    }
+
+    private func alternateShotStrokes(for team: Int, on hole: Int) -> Int {
+        let h0 = teamHandicap(0), h1 = teamHandicap(1)
+        let myHcp = team == 0 ? h0 : h1
+        let oppHcp = team == 0 ? h1 : h0
+        let diff = myHcp - oppHcp
+        guard diff > 0, let si = roundStrokeIndex[hole] else { return 0 }
+        var s = 0
+        if si <= diff      { s += 1 }
+        if si <= diff - 18 { s += 1 }
+        return s
+    }
+
+    // MARK: - 5-3-1
+
+    func fiveThreeOneHolePoints(for hole: Int) -> [UUID: Double] {
+        guard gameFormat == .fiveThreeOne, players.count == 4 else { return [:] }
+        guard players.allSatisfy({ scores[$0.id]?[hole] != nil }) else { return [:] }
+        let base = [5.0, 3.0, 1.0, 0.0]
+        let nets = players.map { (id: $0.id, net: groupNetScore(for: $0, hole: hole) ?? 9999) }
+            .sorted { $0.net < $1.net }
+        var result = [UUID: Double]()
+        var i = 0
+        while i < nets.count {
+            var j = i
+            while j < nets.count && nets[j].net == nets[i].net { j += 1 }
+            let split = (i..<j).reduce(0.0) { $0 + base[$1] } / Double(j - i)
+            for k in i..<j { result[nets[k].id] = split }
+            i = j
+        }
+        return result
+    }
+
+    func fiveThreeOnePoints(for player: Player) -> Double {
+        (1...18).reduce(0.0) { $0 + (fiveThreeOneHolePoints(for: $1)[player.id] ?? 0) }
+    }
+
+    var fiveThreeOneStandings: [(player: Player, points: Double)] {
+        players.map { (player: $0, points: fiveThreeOnePoints(for: $0)) }
+            .sorted { $0.points > $1.points }
+    }
+
+    private var fiveThreeOneStandingsText: String {
+        guard !players.isEmpty else { return "" }
+        return fiveThreeOneStandings
+            .map { "\($0.player.name): \(fiveThreeOnePointsFormatted($0.points))" }
+            .joined(separator: "  ")
+    }
+
+    func fiveThreeOnePointsFormatted(_ pts: Double) -> String {
+        pts.truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(pts))" : String(format: "%.1f", pts)
+    }
+
+    // MARK: - Wolf
+
+    func wolfPlayer(for hole: Int) -> Player? {
+        guard players.count >= 4 else { return nil }
+        return players[(hole - 1) % players.count]
+    }
+
+    func setWolfDecision(for hole: Int, partnerID: UUID?) {
+        guard let wolf = wolfPlayer(for: hole) else { return }
+        wolfHoleStates[hole] = WolfHoleState(
+            wolfPlayerID: wolf.id,
+            partnerPlayerID: partnerID,
+            isLoneWolf: partnerID == nil,
+            isDecided: true
+        )
+    }
+
+    func wolfHolePoints(for hole: Int) -> [UUID: Int] {
+        guard gameFormat == .wolf, players.count == 4 else { return [:] }
+        guard let state = wolfHoleStates[hole], state.isDecided else { return [:] }
+        guard players.allSatisfy({ scores[$0.id]?[hole] != nil }) else { return [:] }
+        guard let wolf = players.first(where: { $0.id == state.wolfPlayerID }) else { return [:] }
+        let wolfNet = groupNetScore(for: wolf, hole: hole)!
+
+        var pts = [UUID: Int]()
+        if state.isLoneWolf {
+            let others = players.filter { $0.id != state.wolfPlayerID }
+            let otherNets = others.map { groupNetScore(for: $0, hole: hole)! }
+            if otherNets.allSatisfy({ wolfNet < $0 }) {
+                pts[wolf.id] = 4; others.forEach { pts[$0.id] = 0 }
+            } else if otherNets.allSatisfy({ $0 < wolfNet }) {
+                pts[wolf.id] = 0; others.forEach { pts[$0.id] = 2 }
+            } else {
+                players.forEach { pts[$0.id] = 1 }
+            }
+        } else if let partnerID = state.partnerPlayerID,
+                  let partner = players.first(where: { $0.id == partnerID }) {
+            let partnerNet = groupNetScore(for: partner, hole: hole)!
+            let bestWolf = min(wolfNet, partnerNet)
+            let others = players.filter { $0.id != wolf.id && $0.id != partner.id }
+            let bestOther = others.map { groupNetScore(for: $0, hole: hole)! }.min()!
+            if bestWolf < bestOther {
+                pts[wolf.id] = 2; pts[partner.id] = 1; others.forEach { pts[$0.id] = 0 }
+            } else if bestOther < bestWolf {
+                pts[wolf.id] = 0; pts[partner.id] = 0; others.forEach { pts[$0.id] = 2 }
+            } else {
+                players.forEach { pts[$0.id] = 1 }
+            }
+        }
+        return pts
+    }
+
+    func wolfPoints(for player: Player) -> Int {
+        (1...18).reduce(0) { $0 + (wolfHolePoints(for: $1)[player.id] ?? 0) }
+    }
+
+    var wolfStandings: [(player: Player, points: Int)] {
+        players.map { (player: $0, points: wolfPoints(for: $0)) }
+            .sorted { $0.points > $1.points }
+    }
+
+    private var wolfStandingsText: String {
+        guard !players.isEmpty else { return "" }
+        return wolfStandings
+            .map { "\($0.player.name): \($0.points)" }
+            .joined(separator: "  ")
     }
 }
