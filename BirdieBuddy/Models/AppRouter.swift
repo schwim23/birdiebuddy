@@ -10,6 +10,7 @@ enum AppRoute: Hashable {
     case newCourse
     case editCourse(CourseSetup)
     case stats
+    case signIn
 }
 
 /// Holds the NavigationPath centrally so any view can push/pop without chained bindings.
