@@ -28,6 +28,10 @@
 	<string>Birdie Buddy reads photos so you can pick a scorecard image to auto-fill course setup.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Birdie Buddy uses speech recognition to hear your spoken score.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
