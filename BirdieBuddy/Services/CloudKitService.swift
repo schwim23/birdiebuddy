@@ -12,9 +12,18 @@ protocol CloudKitServiceProtocol {
     func createSession(courseName: String, courseID: String?, format: String,
                        scheduledTeeTime: Date?, creatorUserRecordID: String) async throws -> RoundSessionDTO
 
+    /// Create a RoundGroup under a session.
+    func createGroup(in sessionID: String, index: Int) async throws -> RoundGroupDTO
+
     /// Append a SessionPlayer to a group.
     func addPlayer(name: String, handicap: Int, userRecordID: String?, role: String,
                    to roundGroupID: String) async throws -> SessionPlayerDTO
+
+    /// All groups under a session, ordered by groupIndex.
+    func fetchGroups(in sessionID: String) async throws -> [RoundGroupDTO]
+
+    /// All players in a group.
+    func fetchPlayers(in roundGroupID: String) async throws -> [SessionPlayerDTO]
 
     /// Append (or overwrite) a player's score for a hole.
     func saveScore(playerName: String, hole: Int, strokes: Int,
@@ -74,6 +83,51 @@ final class CloudKitService: CloudKitServiceProtocol {
         let saved = try await db.save(record)
         // First RoundGroup is created lazily by the first joining client.
         return Self.session(from: saved)
+    }
+
+    // MARK: - Groups
+
+    func createGroup(in sessionID: String, index: Int) async throws -> RoundGroupDTO {
+        let record = CKRecord(recordType: CKSchema.RoundGroup.recordType)
+        let sessionRef = CKRecord.Reference(recordID: .init(recordName: sessionID), action: .deleteSelf)
+        record[CKSchema.RoundGroup.roundSessionRef] = sessionRef
+        record[CKSchema.RoundGroup.groupIndex]      = index as CKRecordValue
+        let saved = try await db.save(record)
+        return RoundGroupDTO(id: saved.recordID.recordName, roundSessionID: sessionID, groupIndex: index)
+    }
+
+    func fetchGroups(in sessionID: String) async throws -> [RoundGroupDTO] {
+        let sessionRef = CKRecord.Reference(recordID: .init(recordName: sessionID), action: .none)
+        let predicate = NSPredicate(format: "%K == %@", CKSchema.RoundGroup.roundSessionRef, sessionRef)
+        let query = CKQuery(recordType: CKSchema.RoundGroup.recordType, predicate: predicate)
+        query.sortDescriptors = [NSSortDescriptor(key: CKSchema.RoundGroup.groupIndex, ascending: true)]
+        let (matches, _) = try await db.records(matching: query)
+        return matches.compactMap {
+            guard let r = try? $0.1.get() else { return nil }
+            return RoundGroupDTO(
+                id: r.recordID.recordName,
+                roundSessionID: sessionID,
+                groupIndex: r[CKSchema.RoundGroup.groupIndex] as? Int ?? 0
+            )
+        }
+    }
+
+    func fetchPlayers(in roundGroupID: String) async throws -> [SessionPlayerDTO] {
+        let groupRef = CKRecord.Reference(recordID: .init(recordName: roundGroupID), action: .none)
+        let predicate = NSPredicate(format: "%K == %@", CKSchema.SessionPlayer.roundGroupRef, groupRef)
+        let query = CKQuery(recordType: CKSchema.SessionPlayer.recordType, predicate: predicate)
+        let (matches, _) = try await db.records(matching: query)
+        return matches.compactMap {
+            guard let r = try? $0.1.get() else { return nil }
+            return SessionPlayerDTO(
+                id: r.recordID.recordName,
+                roundGroupID: roundGroupID,
+                name:     r[CKSchema.SessionPlayer.name] as? String ?? "",
+                handicap: r[CKSchema.SessionPlayer.handicap] as? Int ?? 0,
+                userRecordID: r[CKSchema.SessionPlayer.userRecordID] as? String,
+                role:     r[CKSchema.SessionPlayer.role] as? String ?? "player"
+            )
+        }
     }
 
     // MARK: - Players & scores

@@ -19,6 +19,13 @@ final class AppState {
     var authSession: AuthSession? = nil
     var isSignedIn: Bool { authSession != nil }
 
+    /// When non-nil, score entries are also pushed to CloudKit for the
+    /// current collaborative session. Set by RoundLobbyView / JoinRoundView.
+    var liveSession: LiveSessionContext? = nil
+
+    /// Default to the live service; tests inject `MockCloudKitService`.
+    var cloudKit: CloudKitServiceProtocol = CloudKitService.shared
+
     var isRoundFinished: Bool { currentHole > 18 }
 
     // MARK: - Course helpers
@@ -71,6 +78,18 @@ final class AppState {
         if gameFormat == .matchPlay, matchIsDecided, !isRoundFinished {
             currentHole = 19
         }
+
+        // Push to CloudKit when this is a live collaborative round.
+        Task { try? await pushScoreToCloud(strokes, hole: hole, player: player) }
+    }
+
+    /// Mirror a recorded score to CloudKit when in a live session. No-op otherwise.
+    /// Extracted so unit tests can await deterministically.
+    @discardableResult
+    func pushScoreToCloud(_ strokes: Int, hole: Int, player: Player) async throws -> ScoreEntryDTO? {
+        guard let live = liveSession else { return nil }
+        return try await cloudKit.saveScore(playerName: player.name, hole: hole,
+                                             strokes: strokes, in: live.roundGroupID)
     }
 
     // MARK: - Match Play
