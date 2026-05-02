@@ -132,6 +132,36 @@ struct HomeView: View {
             }
             .accessibilityIdentifier("home.startRoundButton")
 
+            HStack(spacing: 10) {
+                Button {
+                    if appState.isSignedIn { router.navigate(to: .roundLobby) }
+                    else { router.navigate(to: .signIn) }
+                } label: {
+                    Text("Start Live Round")
+                        .font(.subheadline.weight(.medium))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .background(Color(.systemGray6))
+                        .foregroundStyle(.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .accessibilityIdentifier("home.startLiveRoundButton")
+
+                Button {
+                    if appState.isSignedIn { router.navigate(to: .joinRound) }
+                    else { router.navigate(to: .signIn) }
+                } label: {
+                    Text("Join Round")
+                        .font(.subheadline.weight(.medium))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .background(Color(.systemGray6))
+                        .foregroundStyle(.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .accessibilityIdentifier("home.joinRoundButton")
+            }
+
             if !allRounds.isEmpty {
                 Button {
                     router.navigate(to: .stats)

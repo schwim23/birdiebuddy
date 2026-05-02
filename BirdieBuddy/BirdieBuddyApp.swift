@@ -40,6 +40,8 @@ struct BirdieBuddyApp: App {
                         case .editCourse(let c):  CourseSetupView(existingCourse: c)
                         case .stats:              StatsView()
                         case .signIn:             SignInView()
+                        case .roundLobby:         RoundLobbyView()
+                        case .joinRound:          JoinRoundView()
                         }
                     }
             }

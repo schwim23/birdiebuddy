@@ -16,6 +16,11 @@ struct RoundView: View {
     var body: some View {
         VStack(spacing: 0) {
 
+            // MARK: Live-round join code (only when in a collaborative session)
+            if let live = appState.liveSession {
+                liveCodeBanner(live).padding(.top, 12).padding(.horizontal)
+            }
+
             // MARK: Hole navigation header
             HStack(spacing: 24) {
                 Button {
@@ -102,6 +107,28 @@ struct RoundView: View {
         .onDisappear {
             speechRecognizer.stopListening()
         }
+    }
+
+    // MARK: - Live-round join code
+
+    private func liveCodeBanner(_ live: LiveSessionContext) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Live Round")
+                    .font(.caption2).foregroundStyle(.secondary)
+                Text(live.joinCode)
+                    .font(.title3.weight(.semibold)).monospaced()
+                    .accessibilityIdentifier("liveRound.joinCode")
+            }
+            Spacer()
+            ShareLink(item: "Join my Birdie Buddy round: \(live.joinCode)") {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.title3)
+            }
+        }
+        .padding(.horizontal, 14).padding(.vertical, 10)
+        .background(Color.green.opacity(0.10))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
     // MARK: - Match status banner

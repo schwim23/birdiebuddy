@@ -35,6 +35,22 @@ final class MockCloudKitService: CloudKitServiceProtocol, @unchecked Sendable {
         return session
     }
 
+    func createGroup(in sessionID: String, index: Int) async throws -> RoundGroupDTO {
+        let group = RoundGroupDTO(id: UUID().uuidString, roundSessionID: sessionID, groupIndex: index)
+        groups[group.id] = group
+        return group
+    }
+
+    func fetchGroups(in sessionID: String) async throws -> [RoundGroupDTO] {
+        groups.values
+            .filter { $0.roundSessionID == sessionID }
+            .sorted { $0.groupIndex < $1.groupIndex }
+    }
+
+    func fetchPlayers(in roundGroupID: String) async throws -> [SessionPlayerDTO] {
+        players.values.filter { $0.roundGroupID == roundGroupID }
+    }
+
     func addPlayer(name: String, handicap: Int, userRecordID: String?, role: String,
                    to roundGroupID: String) async throws -> SessionPlayerDTO {
         let player = SessionPlayerDTO(
