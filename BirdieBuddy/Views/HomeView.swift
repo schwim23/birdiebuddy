@@ -7,11 +7,14 @@ private extension Color {
 
 struct HomeView: View {
     @Environment(AppRouter.self) private var router
+    @Environment(AppState.self) private var appState
 
     @Query(sort: \RoundRecord.date, order: .reverse)
     private var allRounds: [RoundRecord]
 
     @Query private var allProfiles: [PlayerProfile]
+
+    @State private var showAccountSheet = false
 
     private var recentRounds: [RoundRecord] { Array(allRounds.prefix(3)) }
 
@@ -40,19 +43,54 @@ struct HomeView: View {
         }
         .navigationTitle("")
         .navigationBarHidden(true)
+        .sheet(isPresented: $showAccountSheet) {
+            AccountView()
+        }
     }
 
     // MARK: - Header
 
     private var header: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "bird.fill")
-                .font(.system(size: 48))
-                .foregroundStyle(Color.emerald)
-            Text("Birdie Buddy")
-                .font(.largeTitle).fontWeight(.bold)
+        ZStack {
+            VStack(spacing: 8) {
+                Image(systemName: "bird.fill")
+                    .font(.system(size: 48))
+                    .foregroundStyle(Color.emerald)
+                Text("Birdie Buddy")
+                    .font(.largeTitle).fontWeight(.bold)
+            }
+            HStack {
+                Spacer()
+                accountButton.padding(.top, 8)
+            }
         }
         .padding(.top, 16)
+    }
+
+    @ViewBuilder
+    private var accountButton: some View {
+        if let session = appState.authSession {
+            Button {
+                showAccountSheet = true
+            } label: {
+                Circle()
+                    .fill(Color.emerald.opacity(0.18))
+                    .frame(width: 36, height: 36)
+                    .overlay(
+                        Text(session.initials)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.emerald)
+                    )
+            }
+            .accessibilityIdentifier("auth.accountAvatar")
+        } else {
+            Button("Sign In") {
+                router.navigate(to: .signIn)
+            }
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(Color.emerald)
+            .accessibilityIdentifier("auth.signInLink")
+        }
     }
 
     // MARK: - Handicap card

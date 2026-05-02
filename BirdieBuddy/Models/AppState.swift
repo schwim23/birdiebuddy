@@ -14,6 +14,11 @@ final class AppState {
     var roundPar: [Int: Int] = Course.defaultPar
     var roundStrokeIndex: [Int: Int] = Course.defaultStrokeIndex
 
+    /// Signed-in Apple identity, restored from Keychain on launch.
+    /// `nil` for unauthenticated (solo / local-only) usage.
+    var authSession: AuthSession? = nil
+    var isSignedIn: Bool { authSession != nil }
+
     var isRoundFinished: Bool { currentHole > 18 }
 
     // MARK: - Course helpers

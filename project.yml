@@ -23,6 +23,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.schwim23.BirdieBuddy
         INFOPLIST_FILE: BirdieBuddy/Info.plist
+        CODE_SIGN_ENTITLEMENTS: BirdieBuddy/BirdieBuddy.entitlements
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
     info:

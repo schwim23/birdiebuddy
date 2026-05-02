@@ -6,6 +6,23 @@ struct BirdieBuddyApp: App {
     @State private var appState = AppState()
     @State private var router = AppRouter()
 
+    init() {
+        let state = AppState()
+        if let restored = AuthService.shared.restoreSession() {
+            state.authSession = restored
+            Task {
+                let valid = await AuthService.shared.validateSession(userID: restored.userID)
+                if !valid {
+                    await MainActor.run {
+                        AuthService.shared.signOut()
+                        state.authSession = nil
+                    }
+                }
+            }
+        }
+        _appState = State(wrappedValue: state)
+    }
+
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: Binding(
@@ -22,6 +39,7 @@ struct BirdieBuddyApp: App {
                         case .newCourse:          CourseSetupView()
                         case .editCourse(let c):  CourseSetupView(existingCourse: c)
                         case .stats:              StatsView()
+                        case .signIn:             SignInView()
                         }
                     }
             }
