@@ -6,6 +6,7 @@ struct RoundView: View {
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var displayHole: Int = 1
     @State private var isDictatingAll = false
+    @State private var showLiveScoreboard = false
 
     private var currentPar: Int { appState.par(for: displayHole) }
 
@@ -112,7 +113,7 @@ struct RoundView: View {
     // MARK: - Live-round join code
 
     private func liveCodeBanner(_ live: LiveSessionContext) -> some View {
-        HStack {
+        HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Live Round")
                     .font(.caption2).foregroundStyle(.secondary)
@@ -121,6 +122,14 @@ struct RoundView: View {
                     .accessibilityIdentifier("liveRound.joinCode")
             }
             Spacer()
+            Button {
+                showLiveScoreboard = true
+            } label: {
+                Label("Scoreboard", systemImage: "rectangle.grid.3x2")
+                    .labelStyle(.iconOnly)
+                    .font(.title3)
+            }
+            .accessibilityIdentifier("liveRound.scoreboardButton")
             ShareLink(item: "Join my Birdie Buddy round: \(live.joinCode)") {
                 Image(systemName: "square.and.arrow.up")
                     .font(.title3)
@@ -129,6 +138,9 @@ struct RoundView: View {
         .padding(.horizontal, 14).padding(.vertical, 10)
         .background(Color.green.opacity(0.10))
         .clipShape(RoundedRectangle(cornerRadius: 10))
+        .sheet(isPresented: $showLiveScoreboard) {
+            LiveScoreboardView()
+        }
     }
 
     // MARK: - Match status banner

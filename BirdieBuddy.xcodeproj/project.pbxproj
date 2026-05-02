@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		06105C8B70F4180CA2F8EAB4 /* MockCloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85173A9B0FB14331EEDE63F7 /* MockCloudKitService.swift */; };
+		06D34C66B163750E4213D55E /* LiveScoreboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7CFBC22E7C4BF06C09C433 /* LiveScoreboardTests.swift */; };
 		0A84F304D2943325914B3B94 /* GameFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E41CD192965DA85F0DF1F44 /* GameFormat.swift */; };
 		0F6647B4571DEAF8F7E213DA /* RoundRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BCA225C51C2C942C06DC9 /* RoundRecord.swift */; };
 		11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184827BB522982A2AC458814 /* SummaryView.swift */; };
@@ -30,6 +31,7 @@
 		6D913B6669351B2FAB1C4D97 /* CloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397513DB4DDC78DB8F20B69 /* CloudKitService.swift */; };
 		6DB9E6C3E7BDC148F9B52391 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */; };
 		76D3A5E5616885242CAEEABF /* CourseDatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CC0B35DBD9199CC41E411A /* CourseDatabaseTests.swift */; };
+		77D1FF8304CEF576F52E3BDD /* LiveScoreboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784D2D484BF69687B7B51C37 /* LiveScoreboardView.swift */; };
 		79A7DD4CAEDE17470610636A /* PlayerScoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F6763AC38DC3FD1E086512 /* PlayerScoreRow.swift */; };
 		84BC85AC7F79C7CFE72DA44B /* ScoreParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EA8E57C398CA490A389D082 /* ScoreParserTests.swift */; };
 		889184A8806E3FEF19EC44BB /* CoursePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C3B5CA227492D512444EF9 /* CoursePickerView.swift */; };
@@ -115,6 +117,7 @@
 		6B9551F9F403658E94006CEB /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		6DDB8A7ECD0F51FBA27945BF /* CourseDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDatabase.swift; sourceTree = "<group>"; };
 		7355399B09C1090B63728716 /* BirdieBuddyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdieBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		784D2D484BF69687B7B51C37 /* LiveScoreboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveScoreboardView.swift; sourceTree = "<group>"; };
 		8059089E8512BC5DF8890888 /* ScorecardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardView.swift; sourceTree = "<group>"; };
 		80B019E86723609B9A489910 /* ScorecardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardTests.swift; sourceTree = "<group>"; };
 		85173A9B0FB14331EEDE63F7 /* MockCloudKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCloudKitService.swift; sourceTree = "<group>"; };
@@ -147,6 +150,7 @@
 		EC3E6ADA71AE023BCD5D9949 /* FavoriteCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCourse.swift; sourceTree = "<group>"; };
 		EC78E3FD6F1F5EC44F65CDA8 /* RoundLobbyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundLobbyView.swift; sourceTree = "<group>"; };
 		EE8128F1DA64094F71ADDB4C /* AuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthServiceTests.swift; sourceTree = "<group>"; };
+		EF7CFBC22E7C4BF06C09C433 /* LiveScoreboardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveScoreboardTests.swift; sourceTree = "<group>"; };
 		FE893A6D60AC3742E07E76E6 /* CloudKitSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSchema.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -221,6 +225,7 @@
 				911B1C521BBC285C998C5E35 /* CourseSetupView.swift */,
 				9C3D1CBD97543D82055158AC /* HomeView.swift */,
 				B86B0F87F149F31DE332E2AF /* JoinRoundView.swift */,
+				784D2D484BF69687B7B51C37 /* LiveScoreboardView.swift */,
 				94F6763AC38DC3FD1E086512 /* PlayerScoreRow.swift */,
 				EC78E3FD6F1F5EC44F65CDA8 /* RoundLobbyView.swift */,
 				9217713B9A056E0D5307B144 /* RoundView.swift */,
@@ -242,6 +247,7 @@
 				B4CC0B35DBD9199CC41E411A /* CourseDatabaseTests.swift */,
 				B28A9A921A24F9D3DB63C4EF /* Info.plist */,
 				A2CC0923C945EC9F62057478 /* KeychainHelperTests.swift */,
+				EF7CFBC22E7C4BF06C09C433 /* LiveScoreboardTests.swift */,
 				AF8ADB2E43259092955BA5EA /* LiveSessionTests.swift */,
 				85173A9B0FB14331EEDE63F7 /* MockCloudKitService.swift */,
 				CE168AA29F0AFF68EE2081BB /* MultiScoreParserTests.swift */,
@@ -425,6 +431,7 @@
 				BA16CC41782285A42E874B40 /* HomeView.swift in Sources */,
 				65E1F284BC9A4164E1B34260 /* JoinRoundView.swift in Sources */,
 				97CDA7F23E0B58743A685D93 /* KeychainHelper.swift in Sources */,
+				77D1FF8304CEF576F52E3BDD /* LiveScoreboardView.swift in Sources */,
 				BB2E9FE4C607D7DC61ADAFE2 /* LiveSessionContext.swift in Sources */,
 				E6F9F623C59B839D0D304689 /* MultiScoreParser.swift in Sources */,
 				19CF6B3CA5821E6ECD47ABE3 /* Player.swift in Sources */,
@@ -454,6 +461,7 @@
 				FFC9B9ECD56641173F888A9E /* CloudKitServiceTests.swift in Sources */,
 				76D3A5E5616885242CAEEABF /* CourseDatabaseTests.swift in Sources */,
 				2B54B8B8969DE3CDC25800A9 /* KeychainHelperTests.swift in Sources */,
+				06D34C66B163750E4213D55E /* LiveScoreboardTests.swift in Sources */,
 				DE5512E16B5319996F66A052 /* LiveSessionTests.swift in Sources */,
 				06105C8B70F4180CA2F8EAB4 /* MockCloudKitService.swift in Sources */,
 				B0DE00022005D64607530CBB /* MultiScoreParserTests.swift in Sources */,
