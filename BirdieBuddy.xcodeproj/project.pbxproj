@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06105C8B70F4180CA2F8EAB4 /* MockCloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85173A9B0FB14331EEDE63F7 /* MockCloudKitService.swift */; };
 		0A84F304D2943325914B3B94 /* GameFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E41CD192965DA85F0DF1F44 /* GameFormat.swift */; };
 		0F6647B4571DEAF8F7E213DA /* RoundRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54BCA225C51C2C942C06DC9 /* RoundRecord.swift */; };
 		11C2DAD5D4196DB1A3948258 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184827BB522982A2AC458814 /* SummaryView.swift */; };
@@ -22,8 +23,10 @@
 		35EC65D3689A010964F6468C /* AuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8128F1DA64094F71ADDB4C /* AuthServiceTests.swift */; };
 		3EACD22E2A8A884E7B7D86B9 /* PlayerProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641E694C891613E89075E44A /* PlayerProfile.swift */; };
 		4D2207DF039C08E9613C1F4B /* courses.json in Resources */ = {isa = PBXBuildFile; fileRef = 9F7A3DD953D8B2B2B4B88F56 /* courses.json */; };
+		4D7CC10601212E365CCEF0F8 /* CloudKitModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F74BAC7DC92F798E67BD08C /* CloudKitModels.swift */; };
 		5845063E31CF5DCDF3952391 /* AuthSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3278BF2419B7054D71874F /* AuthSessionTests.swift */; };
 		5E68A2928C4C795F55C91951 /* SpeechRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */; };
+		6D913B6669351B2FAB1C4D97 /* CloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397513DB4DDC78DB8F20B69 /* CloudKitService.swift */; };
 		6DB9E6C3E7BDC148F9B52391 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9E6253D5129ABCA50BD4E0 /* SetupView.swift */; };
 		76D3A5E5616885242CAEEABF /* CourseDatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CC0B35DBD9199CC41E411A /* CourseDatabaseTests.swift */; };
 		79A7DD4CAEDE17470610636A /* PlayerScoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F6763AC38DC3FD1E086512 /* PlayerScoreRow.swift */; };
@@ -44,6 +47,7 @@
 		B20697403CAC2C306E96CDB1 /* AuthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F67BB02DBB56A0EDE1D24B /* AuthSession.swift */; };
 		BA16CC41782285A42E874B40 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3D1CBD97543D82055158AC /* HomeView.swift */; };
 		C43DB9A09CB3E587D0DA1480 /* FavoriteCourse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E6ADA71AE023BCD5D9949 /* FavoriteCourse.swift */; };
+		C71D1BAB1635E0A8673BECAE /* CloudKitSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE893A6D60AC3742E07E76E6 /* CloudKitSchema.swift */; };
 		C72281D8AD37784C141931CA /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */; };
 		CC475248FE9310D2A7ABDE9A /* StartRoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A5BD70B1E470F646464B6F /* StartRoundTests.swift */; };
 		CE80A6A72EB516CC8AF0F7D7 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFAB1654C94AAC2EF74FED20 /* AuthService.swift */; };
@@ -54,6 +58,7 @@
 		E8E6BDC73FE39D8AC73CC2AA /* ScorecardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B019E86723609B9A489910 /* ScorecardTests.swift */; };
 		EB29CB600E75BEB7F7F071E1 /* SavedPlayersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183ABE8E810C345013B5CB04 /* SavedPlayersTests.swift */; };
 		F27507B054167553FF1C6385 /* ScorecardParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E193AD07CFE0270D802846B /* ScorecardParser.swift */; };
+		FFC9B9ECD56641173F888A9E /* CloudKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E34CD72AB73FD28A28EEA69 /* CloudKitServiceTests.swift */; };
 		FFCED4D5A4F273472C1376DD /* SpeechRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F246B70BD4BF49BE000F44 /* SpeechRecognizerTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -91,8 +96,11 @@
 		2F3278BF2419B7054D71874F /* AuthSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionTests.swift; sourceTree = "<group>"; };
 		315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognizer.swift; sourceTree = "<group>"; };
 		37A5BD70B1E470F646464B6F /* StartRoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRoundTests.swift; sourceTree = "<group>"; };
+		3E34CD72AB73FD28A28EEA69 /* CloudKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitServiceTests.swift; sourceTree = "<group>"; };
 		3EF2430DDAD3D45F13F4FB25 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		3F74BAC7DC92F798E67BD08C /* CloudKitModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitModels.swift; sourceTree = "<group>"; };
 		3FE81C7D65CD216FC02D8433 /* ScoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreParser.swift; sourceTree = "<group>"; };
+		4397513DB4DDC78DB8F20B69 /* CloudKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitService.swift; sourceTree = "<group>"; };
 		46804C8AC0FA72373726ACE5 /* MultiScoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiScoreParser.swift; sourceTree = "<group>"; };
 		46F67BB02DBB56A0EDE1D24B /* AuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSession.swift; sourceTree = "<group>"; };
 		48F00EC6675253BFB8B56E7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -105,6 +113,7 @@
 		7355399B09C1090B63728716 /* BirdieBuddyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdieBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8059089E8512BC5DF8890888 /* ScorecardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardView.swift; sourceTree = "<group>"; };
 		80B019E86723609B9A489910 /* ScorecardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardTests.swift; sourceTree = "<group>"; };
+		85173A9B0FB14331EEDE63F7 /* MockCloudKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCloudKitService.swift; sourceTree = "<group>"; };
 		911B1C521BBC285C998C5E35 /* CourseSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSetupView.swift; sourceTree = "<group>"; };
 		9217713B9A056E0D5307B144 /* RoundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundView.swift; sourceTree = "<group>"; };
 		94F6763AC38DC3FD1E086512 /* PlayerScoreRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScoreRow.swift; sourceTree = "<group>"; };
@@ -130,6 +139,7 @@
 		DED07D1C3A1137DF9D44116F /* BirdieBuddy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BirdieBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC3E6ADA71AE023BCD5D9949 /* FavoriteCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCourse.swift; sourceTree = "<group>"; };
 		EE8128F1DA64094F71ADDB4C /* AuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthServiceTests.swift; sourceTree = "<group>"; };
+		FE893A6D60AC3742E07E76E6 /* CloudKitSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSchema.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -139,6 +149,7 @@
 				5975093227D8F112FB51AD0D /* AppRouter.swift */,
 				DBE9B4AD06BCBB789FA20EA2 /* AppState.swift */,
 				46F67BB02DBB56A0EDE1D24B /* AuthSession.swift */,
+				3F74BAC7DC92F798E67BD08C /* CloudKitModels.swift */,
 				1E685FFC2CF7EB0C9A3E9536 /* Course.swift */,
 				6DDB8A7ECD0F51FBA27945BF /* CourseDatabase.swift */,
 				C1C416E51C0BBB40E66C9B83 /* CourseRecord.swift */,
@@ -159,6 +170,8 @@
 			isa = PBXGroup;
 			children = (
 				AFAB1654C94AAC2EF74FED20 /* AuthService.swift */,
+				FE893A6D60AC3742E07E76E6 /* CloudKitSchema.swift */,
+				4397513DB4DDC78DB8F20B69 /* CloudKitService.swift */,
 				2850079231A0A9F06B3DB4B7 /* KeychainHelper.swift */,
 				0E193AD07CFE0270D802846B /* ScorecardParser.swift */,
 				315CCFFFD5466B23DB92A7AE /* SpeechRecognizer.swift */,
@@ -214,9 +227,11 @@
 			children = (
 				EE8128F1DA64094F71ADDB4C /* AuthServiceTests.swift */,
 				2F3278BF2419B7054D71874F /* AuthSessionTests.swift */,
+				3E34CD72AB73FD28A28EEA69 /* CloudKitServiceTests.swift */,
 				B4CC0B35DBD9199CC41E411A /* CourseDatabaseTests.swift */,
 				B28A9A921A24F9D3DB63C4EF /* Info.plist */,
 				A2CC0923C945EC9F62057478 /* KeychainHelperTests.swift */,
+				85173A9B0FB14331EEDE63F7 /* MockCloudKitService.swift */,
 				CE168AA29F0AFF68EE2081BB /* MultiScoreParserTests.swift */,
 				A5793E94BAFDD9F1217BB8CC /* PlayerParserTests.swift */,
 				4EA8E57C398CA490A389D082 /* ScoreParserTests.swift */,
@@ -384,6 +399,9 @@
 				CE80A6A72EB516CC8AF0F7D7 /* AuthService.swift in Sources */,
 				B20697403CAC2C306E96CDB1 /* AuthSession.swift in Sources */,
 				A497684B8FE5FC4F7DE78AD4 /* BirdieBuddyApp.swift in Sources */,
+				4D7CC10601212E365CCEF0F8 /* CloudKitModels.swift in Sources */,
+				C71D1BAB1635E0A8673BECAE /* CloudKitSchema.swift in Sources */,
+				6D913B6669351B2FAB1C4D97 /* CloudKitService.swift in Sources */,
 				342BB7BADDCF82EBE2CBF457 /* Course.swift in Sources */,
 				1A2884BAD04435E2122939E5 /* CourseDatabase.swift in Sources */,
 				889184A8806E3FEF19EC44BB /* CoursePickerView.swift in Sources */,
@@ -418,8 +436,10 @@
 			files = (
 				35EC65D3689A010964F6468C /* AuthServiceTests.swift in Sources */,
 				5845063E31CF5DCDF3952391 /* AuthSessionTests.swift in Sources */,
+				FFC9B9ECD56641173F888A9E /* CloudKitServiceTests.swift in Sources */,
 				76D3A5E5616885242CAEEABF /* CourseDatabaseTests.swift in Sources */,
 				2B54B8B8969DE3CDC25800A9 /* KeychainHelperTests.swift in Sources */,
+				06105C8B70F4180CA2F8EAB4 /* MockCloudKitService.swift in Sources */,
 				B0DE00022005D64607530CBB /* MultiScoreParserTests.swift in Sources */,
 				1CC8F82E2A4822A35C818223 /* PlayerParserTests.swift in Sources */,
 				84BC85AC7F79C7CFE72DA44B /* ScoreParserTests.swift in Sources */,
